@@ -18,6 +18,18 @@ const previewImage = document.querySelector("#preview-image");
 const previewLocation = document.querySelector("#preview-location");
 const previewCaption = document.querySelector("#preview-caption");
 const closePreview = document.querySelector("#close-preview");
+let imageRequests = new AbortController();
+const imageUrls = new Set();
+
+function releaseResultImages() {
+  imageRequests.abort();
+  imageRequests = new AbortController();
+  if (previewDialog.open) previewDialog.close();
+  previewImage.removeAttribute("src");
+  resultsGrid.replaceChildren();
+  imageUrls.forEach((url) => URL.revokeObjectURL(url));
+  imageUrls.clear();
+}
 
 function setSystemState(state, vlmEnabled = true) {
   const labels = {
@@ -51,8 +63,8 @@ function metadataChip(label, value, className = "") {
 }
 
 function openPreview(result) {
-  if (!result.image_url) return;
-  previewImage.src = result.image_url;
+  if (!result.preview_url) return;
+  previewImage.src = result.preview_url;
   previewImage.alt = `Rank ${result.rank}, ${result.video_id}, frame ${result.frame_id}`;
   previewLocation.textContent = `${result.video_id} · IMG ${result.image_number ?? "—"} · FRAME ${result.frame_id}`;
   previewCaption.textContent = result.caption || "Không có caption.";
@@ -70,16 +82,29 @@ function createResultCard(result) {
 
   if (result.image_url) {
     const image = document.createElement("img");
-    image.src = result.image_url;
     image.alt = `${result.video_id}, image ${result.image_number}, frame ${result.frame_id}`;
-    image.loading = result.rank <= 6 ? "eager" : "lazy";
-    image.addEventListener("error", () => {
+    const showMissing = () => {
       image.remove();
+      imageButton.disabled = true;
       const missing = document.createElement("span");
       missing.className = "image-missing";
       missing.textContent = "IMAGE NOT FOUND";
       imageButton.prepend(missing);
-    });
+    };
+    const signal = imageRequests.signal;
+    image.addEventListener("error", showMissing, { once: true });
+    fetch(result.image_url, { cache: "no-store", signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.blob();
+      })
+      .then((blob) => {
+        if (signal.aborted) return;
+        result.preview_url = URL.createObjectURL(blob);
+        imageUrls.add(result.preview_url);
+        image.src = result.preview_url;
+      })
+      .catch(() => { if (!signal.aborted) showMissing(); });
     imageButton.append(image);
     imageButton.addEventListener("click", () => openPreview(result));
   } else {
@@ -121,7 +146,7 @@ function createResultCard(result) {
 }
 
 function renderResults(payload) {
-  resultsGrid.replaceChildren();
+  releaseResultImages();
   queryVariants.replaceChildren();
 
   payload.query_variants.forEach((variant) => {
@@ -201,6 +226,7 @@ form.addEventListener("submit", async (event) => {
 });
 
 closePreview.addEventListener("click", () => previewDialog.close());
+window.addEventListener("pagehide", releaseResultImages);
 previewDialog.addEventListener("click", (event) => {
   if (event.target === previewDialog) previewDialog.close();
 });

@@ -6,6 +6,10 @@ __pycache__/
 env/
 venv/
 .env
+# Machine-local image downloads and cleanup (never publish credentials).
+/kis/local_images.py
+/tests/test_local_images.py
+/config/*.local.json
 .pytest_cache/
 .ruff_cache/
 .codex_tmp/
@@ -15,11 +19,13 @@ venv/
 .ipynb_checkpoints
 
 # Dataset and generated retrieval artifacts
+/dataset/
 /data/
 /objects/
 /mapping/
 /clip-features-32/
 /caption_generator/
+/caption_generator_v2/
 /caption_mapping/
 /index/
 /structured_query.json
@@ -27,6 +33,12 @@ venv/
 /video/
 /preparation/
 /cpu_smoke/
+/dist/
+/kis_output/
+/benchmark_results/
+/caption_v2/
+/caption_runtime/
+/kaggle_upgrade_output/
 
 # Generated data and model files
 *.csv

@@ -1,0 +1,7 @@
+# Kaggle already supplies CUDA torch/torchvision and NumPy.
+av==15.1.0
+transformers==5.15.0
+huggingface-hub==1.27.0
+Pillow>=11.1,<13
+accelerate==1.14.0
+bitsandbytes==0.50.2

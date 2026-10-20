@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "caption_root": "dataset/caption_generator_v2",
+  "video_groups": ["L15", "L16", "L19", "L20", "L21"],
+  "retrieval_profile": "rrf"
+}

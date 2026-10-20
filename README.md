@@ -1,509 +1,116 @@
-# AIC 2026 KIS Retrieval
+# KIS Framefinder
 
-Hệ thống tìm kiếm keyframe video bằng ba luồng retrieval và một VLM reranker:
+Tìm kiếm trên **L15, L16, L19, L20, L21**. Caption đang dùng là **v2**;
+caption/index v1 được lưu riêng, giữ nguyên dữ liệu.
 
-- SigLIP visual search trên Milvus.
-- BM25 keyword search trên caption.
-- SentenceTransformer semantic search trên caption.
-- Object metadata boost nếu có dữ liệu object detection.
-- Qwen2.5-VL rerank top 20 kết quả.
-- FastAPI web app để nhập raw query và xem ảnh top 20.
-
-## Yêu cầu quan trọng
-
-Clone GitHub **chưa đủ để chạy hệ thống**. Các thư mục dữ liệu và artifact lớn
-được bỏ qua trong `.gitignore`, vì vậy người duy trì project phải cung cấp chúng
-qua Google Drive, Hugging Face Dataset, object storage hoặc một kênh riêng:
+## Pipeline
 
 ```text
-data/
-mapping/
-clip-features-32/
-objects/                 # tùy chọn
-caption_generator/       # có thể tự build
-caption_mapping/         # có thể tự build
-index/                   # có thể tự build
+Query → Gemini tạo variants + entities
+                    ↓
+      ┌─────────────┼────────────────┐
+      ↓             ↓                ↓
+ SigLIP/Milvus   BM25/v2       MiniLM/FAISS/v2
+      └─────────────┼────────────────┘
+                    ↓
+        Weighted RRF → Object evidence
+                    ↓
+      Qwen rerank khi có ảnh → Top 20
 ```
 
-Nếu nhận artifact từ nhà cung cấp, cần tối thiểu `data/`, `mapping/` và
-`clip-features-32/`. Nếu có video gốc mới, có thể tự sinh đầy đủ artifact bằng
-[`prepare_videos_cpu.ipynb`](prepare_videos_cpu.ipynb) theo hướng dẫn CPU bên dưới.
+RRF: `k=60`, visual/BM25/semantic = `0.5/0.2/0.3`; top 100 mỗi nhánh,
+Milvus `nprobe=128`, Qwen chấm top 20. Web và notebook dùng chung `SearchService`.
 
-Milvus cũng là thành phần bắt buộc. Cách tái lập dễ nhất là dùng Docker Compose
-đã được kèm trong repository. Nếu đã có Milvus v3 tương thích đang nghe tại
-`http://localhost:19530`, không cần khởi động thêm Compose.
-
-## Yêu cầu hệ thống
-
-- Windows 10/11 hoặc Linux 64-bit.
-- Python 3.11. Khuyến nghị Miniconda/Anaconda.
-- Git.
-- Docker Desktop có Docker Compose để chạy Milvus.
-- NVIDIA GPU và CUDA-compatible driver nếu muốn dùng Qwen VLM.
-- Khoảng 6 GB VRAM cho chế độ VLM 4-bit hiện tại. Có thể tắt VLM nếu không có GPU.
-- Dung lượng đĩa còn trống cho dataset, Milvus và Hugging Face model cache.
-- Gemini API key để chuyển raw query thành structured query.
-- Internet trong lần đầu để tải model theo revision trong `model_manifest.json`.
-
-## 1. Clone repository
-
-```powershell
-git clone <REPOSITORY_URL>
-cd KISBranche
-```
-
-Thay `<REPOSITORY_URL>` bằng URL GitHub của repository này.
-
-## 2. Tạo môi trường Python
-
-Trên PowerShell/Anaconda Prompt:
-
-```powershell
-conda create -n focusguard_ai python=3.11 -y
-conda activate focusguard_ai
-```
-
-Nếu dùng VLM trên NVIDIA GPU, cài bản PyTorch CUDA phù hợp với máy từ
-[pytorch.org](https://pytorch.org/get-started/locally/) trước. Ví dụ với CUDA
-12.8 và các version hiện tại của project:
-
-```powershell
-python -m pip install torch==2.7.1 torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cu128
-```
-
-Sau đó cài các dependency còn lại:
-
-```powershell
-python -m pip install -r requirements.txt
-python -m pip check
-```
-
-Nếu chỉ chạy retrieval không VLM, bản PyTorch CPU vẫn dùng được, nhưng cần tắt
-VLM khi khởi động app ở bước 8.
-
-## 3. Đặt dữ liệu đúng cấu trúc
-
-Keyframe có thể theo layout grouped (khuyến nghị):
+## Cấu trúc
 
 ```text
-data/
-  L21/
-    L21_V001/
-      001.jpg
-      002.jpg
-      ...
-  L27/
-    L27_V013/
-      001.jpg
-      ...
+kis/                         # pipeline đang chạy
+  config.py, paths.py         # cấu hình và đường dẫn
+  visual.py, text.py          # SigLIP/Milvus và BM25/MiniLM
+  objects.py, ranking.py      # object evidence, RRF, ranking helpers
+  solve_kis.py, web_app.py    # điều phối và API
+tools/                       # ingest/index, chuẩn bị Kaggle, đánh giá
+config/                      # pipeline.json, models.json, object_labels.json
+tests/                       # unit tests
+notebooks/runbranch.ipynb     # tìm kiếm qua cùng pipeline với web
+web/                         # giao diện
+docs/                        # hướng dẫn Kaggle
+
+dataset/
+  caption_generator_v2/
+    captions/<group>/*.json   # caption v2, một bản duy nhất
+    caption_mapping/<group>/*.json
+    index/<group>/*.index     # MiniLM + SHA-256/model metadata
+    index/<group>/*.meta.json
+  mapping/<group>/*.csv
+  clip-features-32/<group>/*.npy
+  objects/<group>/<video_id>/*.json
+  data/<group>/<video_id>/*.jpg # ảnh phục vụ preview/rerank khi có
+caption_generator/           # v1 được bảo toàn
+caption_mapping/, index/     # artifact v1 được bảo toàn
 ```
 
-Layout phẳng `data/L21_V001/001.jpg` cũng được hỗ trợ, nhưng không được đặt cùng
-một video trong cả hai layout.
+| Nhóm | Visual vector | Caption v2 |
+|---|---:|---:|
+| L15 | 7.919 | 7.919 |
+| L16 | 9.011 | 9.011 |
+| L19 | 7.746 | 7.746 |
+| L20 | 8.192 | 8.192 |
+| L21 | 7.800 | Chưa có |
+| **Tổng** | **40.668 / 150 video** | **32.868 / 121 video** |
 
-Mỗi video cần mapping CSV và visual embedding cùng tên:
+Scope trong `config/pipeline.json`; build và search chặn các nhóm sau L21.
+L21 hiện tham gia visual/object retrieval. Khi có caption v2 L21, lệnh nạp bên
+dưới sẽ thêm vào text retrieval. Nạp caption/vector không yêu cầu keyframes.
 
-```text
-mapping/
-  L21_V001.csv
-  L27_V013.csv
+## Chạy trên máy hiện tại
 
-clip-features-32/
-  L21_V001.npy
-  L27_V013.npy
-```
-
-Mapping CSV phải có các cột:
-
-```csv
-n,pts_time,fps,frame_idx
-1,0.0,25.0,0
-2,0.04,25.0,1
-```
-
-Mỗi `.npy` phải có shape `(số_keyframe, 768)`, cùng thứ tự với mapping CSV và
-được sinh bởi model SigLIP/revision ghi trong `model_manifest.json`.
-
-Object metadata là tùy chọn:
-
-```text
-objects/
-  L21_V001/
-    001.json
-    002.json
-```
-
-Nếu nhà cung cấp đã gửi cả caption artifact build sẵn, đặt chúng như sau và bỏ
-qua bước 5:
-
-```text
-caption_generator/<group>/<video_id>.json
-caption_mapping/<group>/<video_id>.json
-index/<group>/<video_id>.index
-index/<group>/<video_id>.meta.json
-```
-
-Không commit các thư mục trên vào Git nếu không có quyền phân phối dataset.
-
-### Chuẩn bị video mới trên server CPU
-
-Notebook `prepare_videos_cpu.ipynb` nhận các video trong `video/`, kể cả folder
-con, và sinh đủ artifact tương thích với pipeline tìm kiếm. Tên video phải theo
-dạng `L20_V001.mp4`, `L31_V001.mp4`, v.v.; `video_id` lấy từ tên file. Không dùng
-cùng tên cho hai video khác nhau hoặc ghi đè artifact của dataset cũ.
-
-Flow:
-
-```text
-video/<video_id>.mp4
-  ├── data/<group>/<video_id>/001.jpg, ...
-  ├── mapping/<video_id>.csv
-  ├── clip-features-32/<video_id>.npy            # SigLIP, float32, L2, (N,768)
-  ├── objects/<video_id>/001.json, ...           # SSDLite MobileNetV3, COCO
-  ├── caption_generator/<group>/<video_id>.json  # BLIP caption + VQA
-  ├── caption_mapping/<group>/<video_id>.json
-  ├── index/<group>/<video_id>.index             # MiniLM, 384 chiều
-  ├── index/<group>/<video_id>.meta.json          # SHA-256 + model provenance
-  └── preparation/<group>/<video_id>.json        # nguồn, cấu hình, checkpoint
-```
-
-Trong VS Code **Remote-SSH**, mở repository trên server và chọn Python/kernel
-của server. Việc kết nối OpenVPN giúp truy cập mạng; tính toán chạy tại nơi
-kernel Python được chọn. Cell đầu notebook kiểm tra hostname/Linux để phát hiện
-kernel chọn nhầm.
-
-Môi trường CPU có dependency riêng trong `requirements-video-cpu.txt`, dùng
-PyTorch CPU và không cần bitsandbytes/Qwen/Gemini để chuẩn bị video. Với server
-chưa có Python 3.11 hoặc pip, có thể cài môi trường riêng bằng uv, không cần sudo:
-
-```bash
-# Chạy trong thư mục repository trên server.
-curl -LsSf https://astral.sh/uv/install.sh | sh
-source "$HOME/.local/bin/env"
-uv python install 3.11
-uv venv .venv --python 3.11 --seed
-uv pip install --python .venv/bin/python -r requirements-video-cpu.txt
-.venv/bin/python -m ipykernel install --user --name kis-video-cpu --display-name KIS-Video-CPU
-```
-
-Nếu môi trường `.venv` đã có sẵn thì bỏ qua bước tạo lại. Trong notebook chọn
-kernel **KIS-Video-CPU** hoặc `.venv/bin/python`, rồi:
-
-1. Kiểm tra `PROJECT_DIR` và `EXPECTED_HOSTNAME` ở cell cấu hình.
-2. Đặt video vào `video/`, chọn `VIDEO_IDS` hoặc dùng `None` cho toàn bộ video.
-3. Giữ `SMOKE_MODE=True` lần đầu: xử lý 12 giây/video và lưu riêng vào
-   `cpu_smoke/random_80_160_seed_42/`.
-4. Chạy các cell đến validation; mọi video phải có trạng thái `OK`.
-5. Đổi `SMOKE_MODE=False`, chạy lại từ cấu hình để build toàn bộ video vào repo.
-
-Keyframe mặc định lấy frame 0, rồi sau mỗi ảnh chọn ngẫu nhiên khoảng cách
-**80–160 frame** (bao gồm cả hai đầu) để lấy ảnh tiếp theo. `KEYFRAME_MIN_GAP`,
-`KEYFRAME_MAX_GAP` và `RANDOM_SEED` nằm ở cell cấu hình notebook. Seed kết hợp
-video_id giúp cùng video/cấu hình cho ra cùng bộ keyframe khi chạy lại. Lấy mẫu
-theo số frame nên video 25 FPS và 30 FPS có khoảng cách thời gian khác nhau;
-chế độ này không thêm ảnh tại chuyển cảnh. `frame_idx` là số frame decode thật,
-bắt đầu từ 0; `pts_time` dùng PTS khi có và có fallback theo FPS. Schema đầu ra
-vẫn tương thích với corpus cũ.
-
-Object detector mới dùng bộ nhãn COCO 80 lớp, khác bộ Open Images của artifact
-provider. JSON đầu ra có **đúng 5 field và kiểu dữ liệu của corpus chính**:
-
-```json
-{
-  "detection_scores": ["0.9"],
-  "detection_class_names": ["/m/019jd"],
-  "detection_class_entities": ["Boat"],
-  "detection_boxes": [["0.1", "0.2", "0.8", "0.9"]],
-  "detection_class_labels": ["43"]
-}
-```
-
-Mã MID, tên và label index được ánh xạ bằng `object_label_map.json`, kiểm chứng
-với bảng class chính thức của Open Images. Box là chuỗi tọa độ normalized theo
-`ymin,xmin,ymax,xmax`. JSON objects không chứa metadata phụ; identity, model và
-checksum được lưu riêng trong `preparation/<group>/<video_id>.json`.
-Detector vẫn dự đoán nhãn COCO; nhãn không có ánh xạ đúng (hiện là `cup`) được
-bỏ qua. Số detection tùy ảnh/threshold, tối đa 100; không padding prediction giả
-để bắt chước số lượng của provider.
-
-Kiểm tra format từng folder sau khi build xong:
-
-```bash
-.venv/bin/python audit_artifact_formats.py --video-id L20_V001
-```
-
-Khi đang xử lý hoặc mới có một số checkpoint, thêm `--allow-incomplete` để các
-artifact chưa hoàn tất được báo `PENDING` thay vì coi là lỗi format. Notebook
-cũng hiển thị bảng audit của đủ 7 folder ở bước validation.
-
-Nếu có objects được tạo bởi phiên bản pipeline cũ, chuyển schema mà không cần
-chạy lại detector:
-
-```bash
-.venv/bin/python prepare_video_data.py --video-id L20_V001 --stages object-format
-```
-
-Bước này chỉ chuyển output có provenance của pipeline, không chuyển/ghi đè
-artifact provider chưa xác định nguồn.
-
-Notebook giới hạn CPU threads (mặc định tối đa 8), batch visual/object là 2,
-caption batch là 1, DataLoader workers là 0. Caption + 7 câu hỏi VQA thường là
-bước chậm nhất trên CPU; có checkpoint sau mỗi batch để tiếp tục nếu bị ngắt.
-Các model được tải tuần tự từng stage để giảm peak RAM.
-
-Cũng có thể chạy không cần notebook:
-
-```bash
-.venv/bin/python prepare_video_data.py --video-id L20_V001 --frame-range 80 160 --seed 42 --threads 8
-```
-
-Smoke test riêng:
-
-```bash
-.venv/bin/python prepare_video_data.py --video-id L20_V001 --frame-range 80 160 --seed 42 --output-root cpu_smoke/random_80_160_seed_42 --max-duration 12 --threads 8
-```
-
-Sau full build, copy/merge các artifact sang máy đang chạy retrieval nếu đó là
-máy khác, rồi chạy `python build_milvus.py rebuild` tại máy có Milvus và đầy đủ
-visual features của cả corpus. Nếu Milvus rỗng dùng `build`. Khởi động lại web
-app/kernel retrieval để nạp caption/BM25 của video mới. Tạo artifact trên CPU
-không bắt buộc server phải có Docker hay Milvus.
-
-Kiểm thử ingestion bằng video tổng hợp nhỏ (không tải model):
-
-```bash
-.venv/bin/python -m unittest test_prepare_video_data -v
-```
-
-## 4. Khởi động Milvus bằng Docker Compose
-
-Docker Compose được track tại `docker-compose.yml`; người clone repo không cần
-tự viết một compose khác.
+Tại project root, dùng môi trường `focusguard_ai`:
 
 ```powershell
-docker compose up -d
-docker compose ps
-```
-
-Đợi đến khi `milvus-etcd`, `milvus-minio` và `milvus-standalone` đều healthy.
-Health endpoint của Milvus là `http://localhost:9091/healthz`; SDK kết nối qua
-port `19530`.
-
-Dữ liệu container được lưu tại `volumes/` và không được commit. Nếu máy đã có
-stack Milvus chiếm các port hoặc tên container này, hãy dùng stack đang có thay
-vì khởi động stack thứ hai.
-
-## 5. Tạo caption artifact
-
-Bỏ qua mục này nếu đã nhận đủ bộ bốn artifact caption/index build sẵn cho mỗi
-video.
-
-Tạo caption và VQA metadata từ toàn bộ keyframe:
-
-```powershell
-python caption_generator.py
-```
-
-Lệnh này tải BLIP caption và BLIP VQA theo revision đã pin, có thể mất nhiều giờ
-với dataset lớn. Script checkpoint theo từng video/batch và bỏ qua frame đã có
-caption hợp lệ.
-
-OCR bằng Gemini là tùy chọn. Chỉ chạy nếu visible text là tín hiệu quan trọng:
-
-```powershell
-python gemini_ocr.py
-```
-
-OCR gửi ảnh lên Gemini, có chi phí/rate limit và có khoảng nghỉ giữa các request.
-Nếu chạy OCR, phải chạy nó trước khi build caption index.
-
-Build FAISS caption index, mapping và integrity manifest:
-
-```powershell
-python build_caption_index.py
-```
-
-Build lại một số video cụ thể:
-
-```powershell
-python build_caption_index.py --video-id L27_V013 --video-id L27_V014
-```
-
-Nếu đang chuyển artifact từ layout legacy, xem dry-run trước:
-
-```powershell
-python migrate_caption_artifacts.py
-python migrate_caption_artifacts.py --apply
-```
-
-## 6. Build visual collection trong Milvus
-
-Lần đầu trên một Milvus rỗng:
-
-```powershell
-python build_milvus.py build
-```
-
-Lệnh này validate toàn bộ `.npy` và mapping trước, sau đó publish collection qua
-alias `clip_keyframes`. Khi thay đổi visual feature và cần thay collection hiện
-tại một cách an toàn:
-
-```powershell
-python build_milvus.py rebuild
-```
-
-Không cần build lại Milvus mỗi lần mở app. Collection tồn tại trong `volumes/`
-cho đến khi thư mục đó bị xóa.
-
-## 7. Cấu hình Gemini API key
-
-Khuyến nghị chỉ set key trong terminal đang chạy app.
-
-PowerShell:
-
-```powershell
+docker start milvus-etcd milvus-minio milvus-standalone
 $env:GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
+.\start_kis.ps1
 ```
 
-Linux/macOS:
+Mở **http://127.0.0.1:8000**. Có thể chạy bằng `python -m kis.web_app`.
+Ảnh ngoài project/Drive Desktop được cấu hình qua `KIS_DATA_ROOT`, trỏ đến thư
+mục chứa các nhóm `L15`, `L16`, …; caption giữ đường dẫn logic `data/...`.
+Có thể lưu đường dẫn riêng cho máy trong `config/images.local.json` dưới khóa
+`data_root`; file này được Git bỏ qua, còn `KIS_DATA_ROOT` luôn được ưu tiên.
+Nguồn ảnh chỉ nhận JPEG/PNG có tên số trong layout `<group>/<video_id>/001.jpg`.
+Các thư mục `video_*`, video gốc, ZIP và nhóm ngoài scope không được dùng để đọc
+keyframe; API cũng từ chối số ảnh không có trong mapping.
 
-```bash
-export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
-```
+### Ảnh Drive không giữ cache trên đĩa
 
-Kiểm tra mà không in key ra màn hình:
+Máy này có reader riêng `kis/local_images.py` và test tương ứng, đều được
+`.gitignore` loại khỏi Git. Đặt `KIS_DRIVE_FOLDER_ID` là ID thư mục ảnh chứa
+`L15`, `L16`, … và `GOOGLE_APPLICATION_CREDENTIALS` tới credentials Google có
+quyền đọc thư mục đó (Drive API phải được bật; với service account, share folder
+cho email của account ở quyền Viewer).
+Cũng có thể đặt `image_source: "drive_api"`, `drive_folder_id` và
+`credentials_file` trong `config/images.local.json` để web/notebook tự nạp cấu
+hình của máy. Đường dẫn credentials tương đối được tính từ project root.
+
+Chế độ này đọc **trực tiếp Drive API**: ảnh cho Qwen dùng luồng RAM, đóng khi chấm
+xong kể cả khi lỗi; ảnh web trả từ RAM với `no-store`, giữ Blob URL trong trang
+và giải phóng khi đổi kết quả/đóng trang. Chế độ `KIS_DATA_ROOT` qua Drive Desktop
+vẫn do Drive quản lý cache. Reader không xóa file trên cloud hoặc cache DriveFS.
+Không có reader riêng thì bỏ `KIS_DRIVE_FOLDER_ID` để dùng ảnh local như thường.
+
+## Nạp dữ liệu và kiểm tra code
 
 ```powershell
-if ($env:GEMINI_API_KEY) { "GEMINI_API_KEY is set" } else { "GEMINI_API_KEY is missing" }
+python -m tools.ingest                  # chỉ build index thiếu/đã thay đổi
+python -m tools.ingest --rebuild-visual # khi thêm/thay visual features
+python -m unittest discover -s tests -t .
 ```
 
-Không ghi API key vào source code, notebook, commit hoặc issue GitHub.
+Caption mới có thể nhập bằng `--source <folder-đã-giải-nén>`. Lệnh nạp chuẩn hóa
+v2, kiểm tra mapping/index và tái sử dụng index hợp lệ; không chạy smoke test.
+Khởi động lại web/kernel sau khi nạp. Trạng thái: `GET /api/status`;
+tìm kiếm: `POST /api/search` với `{"query":"mô tả cảnh"}`.
 
-## 8. Chạy web app
-
-Đảm bảo Docker/Milvus đang chạy, môi trường `focusguard_ai` đang active và API
-key đã được set trong cùng terminal:
-
-```powershell
-python web_app.py
-```
-
-Mở [http://127.0.0.1:8000](http://127.0.0.1:8000), nhập raw query và nhấn
-`Tìm top 20`. Mỗi card hiển thị ảnh, rank, `video_id`, số image/keyframe,
-`frame_id`, score và caption.
-
-Lần tìm đầu tiên sẽ tải/nạp SigLIP, SentenceTransformer, FAISS caption index,
-BM25 và Qwen VLM. Các lần sau tái sử dụng model trong RAM. Chỉ chạy một Uvicorn
-worker, nếu không mỗi worker sẽ nạp một bản model và có thể làm hết VRAM.
-
-Máy không có NVIDIA GPU hoặc không đủ VRAM:
-
-```powershell
-$env:KIS_DISABLE_VLM = "1"
-python web_app.py
-```
-
-Chế độ này vẫn chạy visual + BM25 + semantic + object fusion, chỉ bỏ qua Qwen
-VLM reranking.
-
-Dừng app bằng `Ctrl+C`. Có thể dừng Milvus mà không xóa dữ liệu:
-
-```powershell
-docker compose stop
-```
-
-## 9. Quy trình chạy hằng ngày
-
-Sau khi đã build artifact và Milvus một lần:
-
-```powershell
-conda activate focusguard_ai
-docker compose up -d
-$env:GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-python web_app.py
-```
-
-Không chạy lại `caption_generator.py`, `build_caption_index.py` hay
-`build_milvus.py` nếu dữ liệu nguồn không thay đổi.
-
-## 10. Chạy bằng notebook
-
-Web app là cách sử dụng đề xuất. Notebook vẫn hữu ích khi debug từng bước:
-
-```powershell
-python structure_query.py "<raw query>" --query-id q_001
-```
-
-Sau đó mở `runbranch.ipynb` bằng VS Code hoặc Jupyter. Trong notebook, chạy các
-cell init model một lần. Sau đó có thể ghi đè
-`structured_query.json` và chạy lại từ cell `LOAD/RELOAD QUERY` đến cuối.
-
-## 11. Kiểm thử
-
-Sau khi đã đặt dataset/artifact mẫu:
-
-```powershell
-python -m unittest discover
-```
-
-Một số test dữ liệu/FAISS sẽ skip hoặc không thể pass nếu dependency tùy chọn
-hay sample artifact chưa được cung cấp.
-
-## Troubleshooting
-
-### `Missing GEMINI_API_KEY environment variable`
-
-Set lại `$env:GEMINI_API_KEY` trong đúng terminal sẽ chạy `python web_app.py`.
-Biến set ở terminal khác không tự động truyền sang process hiện tại.
-
-### Không kết nối được `localhost:19530`
-
-```powershell
-docker compose ps
-docker compose logs standalone
-```
-
-Đảm bảo container healthy và port `19530` không bị service khác chiếm.
-
-### `clip_keyframes` không tồn tại hoặc sai model metadata
-
-Đảm bảo `clip-features-32/` và `mapping/` đúng cặp, sau đó chạy trên Milvus rỗng:
-
-```powershell
-python build_milvus.py build
-```
-
-Nếu collection cũ đã tồn tại và visual feature đã thay đổi, dùng `rebuild`.
-
-### Không tìm thấy caption/index
-
-Mỗi video cần đủ caption JSON, caption mapping JSON, FAISS index và manifest.
-Nếu chỉ có ảnh + mapping, chạy:
-
-```powershell
-python caption_generator.py
-python build_caption_index.py
-```
-
-### `VLM requires CUDA by default`
-
-Cài đúng PyTorch CUDA/driver, hoặc tắt VLM:
-
-```powershell
-$env:KIS_DISABLE_VLM = "1"
-python web_app.py
-```
-
-### CUDA out of memory
-
-Đóng các process đang dùng GPU. Nếu vẫn thiếu VRAM, tắt VLM như trên. Qwen VLM
-hiện được nạp 4-bit để giảm VRAM, nhưng vẫn cần bộ nhớ cho image tokens và KV
-cache.
-
-## Artifact và model reproducibility
-
-Model ID, immutable revision, vector dimension và metric được pin trong
-`model_manifest.json`. Không thay model sinh embedding mà tái sử dụng index cũ.
-Caption artifacts có manifest SHA-256; `CaptionRetriever` sẽ từ chối artifact
-thiếu, sai count, sai identity hoặc sai checksum thay vì âm thầm tìm kiếm trên
-dữ liệu không đồng bộ.
+Chuẩn bị trên Kaggle: [hướng dẫn hai profile](docs/KAGGLE.md).
+Đóng gói bằng `python -m tools.package_kaggle`.
