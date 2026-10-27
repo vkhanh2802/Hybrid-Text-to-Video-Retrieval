@@ -18,7 +18,7 @@ class IngestTest(unittest.TestCase):
             old = root / "caption_generator" / "L15" / "L15_V001.json"
             atomic_write_json(old, [{"caption": "v1 stays unchanged"}])
             old_bytes = old.read_bytes()
-            v2 = root / "caption_generator_v2"
+            v2 = root / "dataset"
             source = v2 / "L15" / "L15" / "L15_V001.json"
             record = {"video_id": "L15_V001", "keyframe_n": 1, "frame_id": 10,
                       "image_path": "data/L15/L15_V001/001.jpg", "caption": "A person stands beside a desk.",
@@ -41,9 +41,9 @@ class IngestTest(unittest.TestCase):
             self.assertFalse(source.exists())
             self.assertTrue((v2 / "L22" / "L22_V001.json").exists())
             self.assertFalse((root / "data").exists())
-            records = json.loads((v2 / "captions" / "L15" / "L15_V001.json").read_text())
+            records = json.loads((v2 / "caption_generator" / "L15" / "L15_V001.json").read_text())
             self.assertTrue(index_is_current(v2, "L15_V001", records))
-            atomic_write_json(v2 / "captions" / "L22" / "L22_V001.json", [{"unused": True}])
+            atomic_write_json(v2 / "caption_generator" / "L22" / "L22_V001.json", [{"unused": True}])
             with patch("kis.text.SentenceTransformer") as model:
                 model.return_value.encode.return_value = np.ones((1, 384), dtype=np.float32)
                 caption, video_ids = load_caption_runtime(config)
@@ -53,7 +53,7 @@ class IngestTest(unittest.TestCase):
             self.assertEqual((result[0]["video_id"], result[0]["frame_id"], result[0]["keyframe_n"]), ("L15_V001", 10, 1))
             self.assertEqual(result[0]["retrieval_text"], records[0]["retrieval_text"])
 
-            target = v2 / "captions" / "L15" / "L15_V001.json"
+            target = v2 / "caption_generator" / "L15" / "L15_V001.json"
             changed = dict(records[0], caption="Changed without rebuilding the index")
             atomic_write_json(target, [changed])
             with patch("kis.text.SentenceTransformer") as model:
@@ -71,4 +71,4 @@ class IngestTest(unittest.TestCase):
             with patch("tools.ingest.MAPPING_DIR", root / "mapping"):
                 with self.assertRaisesRegex(ValueError, "Incomplete caption coverage"):
                     ingest(config=RuntimeConfig(v2, ("L15",), "rrf"))
-            self.assertFalse((v2 / "captions").exists())
+            self.assertFalse((v2 / "caption_generator").exists())

@@ -81,6 +81,15 @@ class SampleDataTest(unittest.TestCase):
     def test_sample_caption_index_and_mapping_counts_match(self):
         import faiss
 
+        artifacts = (
+            video_caption_path(SAMPLE_VIDEO_ID),
+            video_caption_mapping_path(SAMPLE_VIDEO_ID),
+            video_caption_index_path(SAMPLE_VIDEO_ID),
+            video_caption_manifest_path(SAMPLE_VIDEO_ID),
+        )
+        if not all(path.is_file() for path in artifacts):
+            self.skipTest(f"sample caption artifacts are not provisioned locally for {SAMPLE_VIDEO_ID}")
+
         captions = json.loads(
             video_caption_path(SAMPLE_VIDEO_ID).read_text(encoding="utf-8")
         )

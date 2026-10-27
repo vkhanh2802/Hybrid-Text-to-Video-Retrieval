@@ -12,7 +12,7 @@ from sentence_transformers import SentenceTransformer
 
 from kis.caption_schema import validate_caption_manifest
 from kis.config import CAPTION_CONFIG
-from kis.paths import CAPTION_V2_ROOT, MAX_VIDEO_GROUP, resolve_video_artifact, video_group
+from kis.paths import DATASET_ROOT, MAX_VIDEO_GROUP, resolve_video_artifact, video_group
 
 
 def tokenize_caption(text, mode="unicode"):
@@ -88,13 +88,13 @@ class CaptionRetriever:
         return any(item.get("retrieval_text") or item.get("caption") for item in captions)
 
     def __init__(self, video_id=None, json_path=None, index_path=None, mapping_path=None,
-                 video_groups=None, artifact_root=None, caption_subdir="captions"):
+                 video_groups=None, artifact_root=None, caption_subdir="caption_generator"):
         groups = set(video_groups or (f"L{n:02d}" for n in range(1, MAX_VIDEO_GROUP + 1)))
         if any(int(video_group(f"{group}_V001")[1:]) > MAX_VIDEO_GROUP for group in groups):
             raise ValueError(f"Dataset scope ends at L{MAX_VIDEO_GROUP}")
         if video_id and int(video_group(video_id)[1:]) > MAX_VIDEO_GROUP:
             raise ValueError(f"Dataset scope ends at L{MAX_VIDEO_GROUP}: {video_id}")
-        root = Path(artifact_root) if artifact_root is not None else CAPTION_V2_ROOT
+        root = Path(artifact_root) if artifact_root is not None else DATASET_ROOT
         specs = ((root / caption_subdir, ".json"), (root / "caption_mapping", ".json"),
                  (root / "index", ".index"), (root / "index", ".meta.json"))
         single_video = video_id is not None or json_path is not None

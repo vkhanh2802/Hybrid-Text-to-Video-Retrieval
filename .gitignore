@@ -24,10 +24,6 @@ venv/
 /objects/
 /mapping/
 /clip-features-32/
-/caption_generator/
-/caption_generator_v2/
-/caption_mapping/
-/index/
 /structured_query.json
 /volumes/
 /video/

@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from pymilvus import MilvusClient, DataType
 
-from kis.config import VISUAL_CONFIG, milvus_model_properties
+from kis.config import VISUAL_CONFIG, load_runtime_config, milvus_model_properties
 from kis.paths import CLIP_FEATURES_DIR, MAPPING_DIR, MAX_VIDEO_GROUP, resolve_video_artifact, video_group
 
 CLIP_DIR = CLIP_FEATURES_DIR
@@ -91,9 +91,11 @@ def preflight_inputs():
     if not CSV_DIR.is_dir():
         raise FileNotFoundError(f"Mapping directory does not exist: {CSV_DIR}")
 
+    groups = set(load_runtime_config(environ={}).video_groups)
     npy_files = sorted(
         path for path in CLIP_DIR.rglob("*.npy")
         if path.is_file() and int(video_group(path.stem)[1:]) <= MAX_VIDEO_GROUP
+        and video_group(path.stem) in groups
     )
     seen = set()
     for path in npy_files:

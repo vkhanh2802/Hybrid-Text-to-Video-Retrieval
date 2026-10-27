@@ -7,7 +7,9 @@ import re
 KIS_ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = KIS_ROOT / "dataset"
 MAX_VIDEO_GROUP = 21
-CAPTION_V2_ROOT = DATASET_ROOT / "caption_generator_v2"
+CAPTION_DIR = DATASET_ROOT / "caption_generator"
+CAPTION_MAPPING_DIR = DATASET_ROOT / "caption_mapping"
+INDEX_DIR = DATASET_ROOT / "index"
 
 
 def local_image_settings(settings_path=None):
@@ -32,10 +34,6 @@ DATA_DIR = configured_data_dir()
 OBJECTS_DIR = DATASET_ROOT / "objects"
 MAPPING_DIR = DATASET_ROOT / "mapping"
 CLIP_FEATURES_DIR = DATASET_ROOT / "clip-features-32"
-# Retained v1 locations for legacy preparation tools; active search uses v2.
-CAPTION_DIR = KIS_ROOT / "caption_generator"
-CAPTION_MAPPING_DIR = KIS_ROOT / "caption_mapping"
-INDEX_DIR = KIS_ROOT / "index"
 
 VIDEO_ID_PATTERN = re.compile(r"^L\d+_V\d+$")
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}

@@ -1,7 +1,7 @@
 # KIS Framefinder
 
-Tìm kiếm trên **L15, L16, L19, L20, L21**. Caption đang dùng là **v2**;
-caption/index v1 được lưu riêng, giữ nguyên dữ liệu.
+Tìm kiếm trên **L01–L03 và L07–L21**. Caption và index đang dùng là **v2**,
+nằm trực tiếp trong `dataset/` với các thư mục độc lập.
 
 ## Pipeline
 
@@ -37,29 +37,40 @@ web/                         # giao diện
 docs/                        # hướng dẫn Kaggle
 
 dataset/
-  caption_generator_v2/
-    captions/<group>/*.json   # caption v2, một bản duy nhất
-    caption_mapping/<group>/*.json
-    index/<group>/*.index     # MiniLM + SHA-256/model metadata
-    index/<group>/*.meta.json
+  caption_generator/<group>/*.json   # caption v2, một bản duy nhất
+  caption_mapping/<group>/*.json
+  index/<group>/*.index              # MiniLM + SHA-256/model metadata
+  index/<group>/*.meta.json
   mapping/<group>/*.csv
   clip-features-32/<group>/*.npy
   objects/<group>/<video_id>/*.json
-  data/<group>/<video_id>/*.jpg # ảnh phục vụ preview/rerank khi có
-caption_generator/           # v1 được bảo toàn
-caption_mapping/, index/     # artifact v1 được bảo toàn
+  data/<group>/<video_id>/*.jpg      # ảnh phục vụ preview/rerank khi có
 ```
 
 | Nhóm | Visual vector | Caption v2 |
 |---|---:|---:|
+| L01 | 7.339 | 7.339 |
+| L02 | 7.616 | 7.616 |
+| L03 | 7.119 | 7.119 |
+| L07 | 7.364 | 7.364 |
+| L08 | 7.725 | 7.725 |
+| L09 | 7.773 | 7.773 |
+| L10 | 7.873 | 7.873 |
+| L11 | 7.497 | 7.497 |
+| L12 | 7.951 | 7.951 |
+| L13 | 7.214 | 7.214 |
+| L14 | 7.094 | 7.094 |
 | L15 | 7.919 | 7.919 |
 | L16 | 9.011 | 9.011 |
+| L17 | 7.158 | 7.158 |
+| L18 | 8.405 | 8.405 |
 | L19 | 7.746 | 7.746 |
 | L20 | 8.192 | 8.192 |
 | L21 | 7.800 | Chưa có |
-| **Tổng** | **40.668 / 150 video** | **32.868 / 121 video** |
+| **Tổng** | **138.796 / 535 video** | **130.996 / 506 video** |
 
-Scope trong `config/pipeline.json`; build và search chặn các nhóm sau L21.
+Scope trong `config/pipeline.json`; build và search dùng cùng danh sách nhóm,
+giới hạn đến L21.
 L21 hiện tham gia visual/object retrieval. Khi có caption v2 L21, lệnh nạp bên
 dưới sẽ thêm vào text retrieval. Nạp caption/vector không yêu cầu keyframes.
 

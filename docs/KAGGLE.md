@@ -67,4 +67,5 @@ python -m tools.ingest --source <folder-output> --rebuild-visual
 ```
 
 Nếu chỉ cập nhật caption, bỏ `--rebuild-visual`. Caption và index đang dùng nằm
-trong `dataset/caption_generator_v2/`. Khởi động lại web/kernel sau khi nhập.
+trong `dataset/caption_generator/`, `dataset/caption_mapping/` và `dataset/index/`.
+Khởi động lại web/kernel sau khi nhập.

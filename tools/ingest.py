@@ -7,7 +7,7 @@ import re
 
 from kis.artifact_io import atomic_write_json, publish_staged_files, temporary_path, write_json
 from kis.caption_schema import load_frame_mapping, normalize_caption_record, validate_unique_caption_records, write_caption_manifest
-from kis.paths import CAPTION_DIR, KIS_ROOT, MAPPING_DIR, canonical_video_artifact_path, video_group
+from kis.paths import CAPTION_DIR, DATASET_ROOT, MAPPING_DIR, canonical_video_artifact_path, video_group
 from kis.config import CAPTION_CONFIG, load_runtime_config
 
 
@@ -37,7 +37,7 @@ def load_normalized_captions(video_id, caption_path, mapping_dir=MAPPING_DIR):
     return records, texts
 
 
-def write_caption_artifacts(video_id, records, embeddings, project_root=KIS_ROOT, caption_subdir="caption_generator"):
+def write_caption_artifacts(video_id, records, embeddings, project_root=DATASET_ROOT, caption_subdir="caption_generator"):
     import faiss
 
     root = Path(project_root)
@@ -63,7 +63,7 @@ def write_caption_artifacts(video_id, records, embeddings, project_root=KIS_ROOT
     return index_path, mapping_path, manifest
 
 
-def build_caption_index(video_ids=None, project_root=KIS_ROOT, device=None, batch_size=32,
+def build_caption_index(video_ids=None, project_root=DATASET_ROOT, device=None, batch_size=32,
                         mapping_dir=None, caption_subdir="caption_generator"):
     import faiss
     import numpy as np
@@ -111,7 +111,7 @@ def index_is_current(root, video_id, records):
     from kis.text import CaptionRetriever
 
     paths = [canonical_video_artifact_path(root / directory, video_id, suffix) for directory, suffix in (
-        ("captions", ".json"), ("caption_mapping", ".json"), ("index", ".index"), ("index", ".meta.json"),
+        ("caption_generator", ".json"), ("caption_mapping", ".json"), ("index", ".index"), ("index", ".meta.json"),
     )]
     if not all(path.is_file() for path in paths):
         return False
@@ -146,7 +146,7 @@ def ingest(source=None, config=None, rebuild_visual=False):
 
     pending = []
     for video_id, records in prepared.items():
-        target = canonical_video_artifact_path(root / "captions", video_id, ".json")
+        target = canonical_video_artifact_path(root / "caption_generator", video_id, ".json")
         if not target.is_file() or json.loads(target.read_text(encoding="utf-8")) != records:
             atomic_write_json(target, records)
         for path in originals[video_id]:
@@ -161,7 +161,7 @@ def ingest(source=None, config=None, rebuild_visual=False):
 
     if pending:
         build_caption_index(pending, project_root=root, mapping_dir=MAPPING_DIR,
-                            device="cpu", batch_size=64, caption_subdir="captions")
+                            device="cpu", batch_size=64, caption_subdir="caption_generator")
     if rebuild_visual:
         from tools.build_milvus import run
         run("rebuild")

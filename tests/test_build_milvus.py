@@ -195,6 +195,18 @@ class BuildMilvusTest(unittest.TestCase):
         self.assertEqual([path.stem for path in files], ["L01_V001"])
         self.assertEqual(total, 2)
 
+    def test_unconfigured_groups_are_excluded_before_validation(self):
+        self.write_video()
+        (self.clip_dir / "L03_V001.npy").write_bytes(b"unconfigured data need not be valid")
+        with (
+            patch.object(build_milvus, "CLIP_DIR", self.clip_dir),
+            patch.object(build_milvus, "CSV_DIR", self.csv_dir),
+            patch.object(build_milvus, "load_runtime_config", return_value=types.SimpleNamespace(video_groups=("L01",))),
+        ):
+            files, total = build_milvus.preflight_inputs()
+        self.assertEqual([path.stem for path in files], ["L01_V001"])
+        self.assertEqual(total, 2)
+
     def test_rebuild_migrates_legacy_collection_after_staging_succeeds(self):
         self.write_video()
         client = FakeMilvusClient(collections={build_milvus.COLLECTION_NAME})

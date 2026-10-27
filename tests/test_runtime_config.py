@@ -15,8 +15,11 @@ from kis.visual import SiglipRetriever
 class RuntimeConfigTest(unittest.TestCase):
     def test_shared_default_uses_original_new_captions_and_measured_profile(self):
         config = load_runtime_config(environ={})
-        self.assertEqual(config.caption_root.name, "caption_generator_v2")
-        self.assertEqual(config.video_groups, ("L15", "L16", "L19", "L20", "L21"))
+        self.assertEqual(config.caption_root.name, "dataset")
+        self.assertEqual(config.video_groups, (
+            "L01", "L02", "L03", "L07", "L08", "L09", "L10", "L11", "L12",
+            "L13", "L14", "L15", "L16", "L17", "L18", "L19", "L20", "L21",
+        ))
         profile = get_search_profile(config.retrieval_profile)
         self.assertEqual(profile.nprobe, 128)
         self.assertEqual(profile.rerank_top_k, 20)
@@ -27,7 +30,7 @@ class RuntimeConfigTest(unittest.TestCase):
     def test_relative_overrides_are_resolved_and_empty_scope_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "config.json"
-            path.write_text(json.dumps({"schema_version": 1, "caption_root": "caption_generator_v2", "video_groups": ["L19"], "retrieval_profile": "upgraded"}))
+            path.write_text(json.dumps({"schema_version": 1, "caption_root": "dataset", "video_groups": ["L19"], "retrieval_profile": "upgraded"}))
             config = load_runtime_config(path, environ={})
             self.assertTrue(config.caption_root.is_absolute())
             with self.assertRaises(ValueError):
