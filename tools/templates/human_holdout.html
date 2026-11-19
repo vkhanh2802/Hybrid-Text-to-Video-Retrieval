@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>KIS · Gán nhãn holdout bằng ảnh</title>
+<style>
+:root{color-scheme:light;--ink:#0f172a;--muted:#475569;--line:#cbd5e1;--brand:#1e3a5f;--bg:#f8fafc}
+*{box-sizing:border-box}body{font:16px/1.6 system-ui,sans-serif;color:var(--ink);background:var(--bg);margin:0}
+main{max-width:1500px;margin:auto;padding:24px}h1{font-size:1.8rem;line-height:1.3}h2{font-size:1.3rem}h3{font-size:1.1rem}
+section,details{background:white;border:1px solid var(--line);border-radius:10px;padding:20px;margin:16px 0}
+label{display:block;font-weight:600;margin:12px 0 4px}input:not([type=checkbox]),textarea,select{width:100%;padding:10px;border:1px solid #64748b;border-radius:5px;font:inherit;background:white;color:var(--ink)}
+textarea{min-height:82px}button,.button{display:inline-block;background:var(--brand);color:white;border:2px solid var(--brand);border-radius:6px;padding:10px 16px;font:inherit;cursor:pointer;text-decoration:none;min-height:44px}
+button.secondary{color:var(--brand);background:white}button:disabled{cursor:not-allowed;opacity:.55}button:hover:not(:disabled),.button:hover{background:#294f7e;color:white}
+:focus-visible{outline:3px solid #2563eb;outline-offset:3px}input[type=checkbox]{width:20px;height:20px;vertical-align:middle;margin-right:8px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1;min-width:180px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.muted{color:var(--muted)}
+.warning{background:#fff8e7;border-left:5px solid #9a6700;padding:14px}.error{color:#991b1b;background:#fef2f2;padding:16px;border:1px solid #991b1b;white-space:pre-line}
+img{max-width:100%;height:auto;display:block;border:1px solid var(--line)}.event{border-top:2px solid var(--line);margin-top:20px;padding-top:12px}
+.judgment{display:grid;grid-template-columns:minmax(100px,1fr) minmax(180px,1fr);gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0}
+.check{font-weight:400}small{font-size:.9rem}.skip{color:#991b1b}summary{cursor:pointer;font-weight:600}progress{width:100%;height:14px}a{color:#1d4ed8}
+@media(max-width:600px){main{padding:12px}section,details{padding:14px}.judgment{grid-template-columns:1fr}h1{font-size:1.5rem}}
+</style>
+<main>
+<h1>KIS · Bộ holdout mới, chỉ gán nhãn từ ảnh</h1>
+<p class="muted">Không có caption, điểm retrieval hoặc gợi ý đáp án. Trang chạy cục bộ, không gửi dữ liệu lên mạng.</p>
+<details open><summary>Đọc trước khi bắt đầu — khoảng 20–40 phút, tùy số cảnh rõ</summary>
+<ol>
+<li>Xem 5 ảnh trong mỗi nhóm. Mỗi ảnh có số <strong>n</strong> và thời gian <strong>t</strong>. Bấm “Mở ảnh lớn” nếu cần.</li>
+<li>Viết một câu mô tả <strong>những gì nhìn thấy rõ</strong> cho event 1. Nếu có áo/cà vạt rõ màu, có thể ghi màu/họa tiết; nếu không thì mô tả cảnh thông thường. Không cố tạo câu về trang phục.</li>
+<li>Với <strong>từng ảnh</strong>, chọn: “Đúng đầy đủ”, “Sai rõ một điều kiện”, hoặc “Không đủ rõ”. Không nhìn thấy chi tiết <em>không tự động là sai</em>. Nhãn mặc định “Chưa xem” phải được thay bằng lựa chọn thật.</li>
+<li>Nếu 5 ảnh có các cảnh khác nhau theo thời gian, thêm event 2 (và tùy chọn event 3), theo thứ tự xuất hiện. Nếu chỉ một cảnh lặp lại, giữ một event; không cần tạo chuỗi giả.</li>
+<li>Nếu tất cả ảnh giống nhau, không bắt buộc có negative. Có thể thêm một ảnh đối chiếu từ nhóm khác để đánh giá nếu muốn. Không tạo negative chỉ cho đủ số lượng.</li>
+<li>Bạn có thể chỉ viết tiếng Việt. Tôi sẽ dịch sau, <strong>không xem caption/điểm</strong>, rồi gửi bạn kiểm tra câu tiếng Anh trước khi đóng băng nhãn.</li>
+</ol>
+<p class="warning">Ảnh quá nhỏ, mờ hoặc không đọc được: chọn “Không đủ rõ”; nếu không thể viết câu nào tin cậy, bỏ qua nhóm và ghi lý do. Các frame thưa chỉ chứng minh thứ tự ảnh, không chứng minh chuyển động liên tục.</p>
+</details>
+<section aria-labelledby="reviewer-heading"><h2 id="reviewer-heading">Thông tin người xem</h2>
+<label for="reviewer">Tên hoặc bí danh (không cần email)</label><input id="reviewer" autocomplete="off">
+<label class="check"><input id="confirm" type="checkbox">Tôi tự xem ảnh để gán nhãn, không dùng caption sinh tự động hoặc kết quả retrieval làm đáp án.</label>
+<div class="actions"><button type="button" id="draft" class="secondary">Tải bản nháp JSON</button><button type="button" id="export">Xuất nhãn hoàn tất</button></div>
+<label for="import">Mở lại file JSON đã lưu</label><input id="import" type="file" accept="application/json,.json">
+<p id="save-status" role="status" class="muted">Nên tải bản nháp trước khi đóng trang; lưu trong trình duyệt không thay thế file JSON.</p>
+<div id="errors" hidden class="error" tabindex="-1" role="alert"></div>
+</section>
+<section aria-label="Điều hướng nhóm ảnh">
+<p id="progress-text" aria-live="polite"></p><progress id="progress" aria-label="Số nhóm đã đánh dấu" max="12" value="0"></progress>
+<div class="row"><button type="button" id="prev" class="secondary">Nhóm trước</button><div><label for="jump">Chọn nhóm ảnh</label><select id="jump"></select></div><button type="button" id="next" class="secondary">Nhóm sau</button></div>
+</section>
+<section id="window" aria-labelledby="sample-heading"><h2 id="sample-heading" tabindex="-1"></h2>
+<p><a id="open-sheet" target="_blank" rel="noopener">Mở ảnh lớn trong tab mới</a></p><img id="sheet" alt="">
+<p id="availability" class="muted"></p>
+<label for="sample-status">Trạng thái nhóm này</label><select id="sample-status"><option value="pending">Chưa hoàn tất</option><option value="reviewed">Đã xem và gán nhãn</option><option value="skipped">Bỏ qua, không thể gán nhãn tin cậy</option></select>
+<label for="skip-reason">Lý do bỏ qua (bắt buộc nếu bỏ qua)</label><input id="skip-reason" placeholder="Ví dụ: ảnh không đọc được, ảnh quá mờ">
+<label for="notes">Ghi chú / lý do không tạo chuỗi / cảnh có thể trùng nội dung cũ</label><textarea id="notes"></textarea>
+<div id="events"></div><div class="actions"><button type="button" id="add-event" class="secondary">Thêm event tiếp theo (tối đa 3)</button></div>
+</section>
+<p class="warning">Sau khi xuất: gửi lại file <strong>human_annotations.json</strong> trong cuộc trò chuyện. Không cần gửi ảnh hoặc khóa Drive. Chưa có đánh giá model nào được chạy trên bộ này.</p>
+</main>
+<script type="application/json" id="packet">__PACKET_JSON__</script>
+<script>
+'use strict';
+const initial=JSON.parse(document.getElementById('packet').textContent);
+let data=structuredClone(initial),position=0;
+const $=id=>document.getElementById(id);
+const key='kis-human-holdout-'+initial.manifest_sha256;
+function eventFor(sample){return {text_vi:'',text_en:'',english_approved:false,judgments:sample.frames.filter(f=>f.status==='downloaded').map(f=>({sample_id:sample.sample_id,keyframe_n:f.keyframe_n,judgment:'unreviewed'}))};}
+function seed(){data.samples.forEach(s=>{if(!s.events.length)s.events.push(eventFor(s));});}
+seed();
+function safeImport(candidate){
+ if(candidate.schema!==initial.schema||candidate.manifest_sha256!==initial.manifest_sha256||candidate.protocol_sha256!==initial.protocol_sha256||!Array.isArray(candidate.samples)||candidate.samples.length!==initial.samples.length)throw Error('File không thuộc bộ ảnh này.');
+ const copy=structuredClone(initial);
+ copy.reviewer=typeof candidate.reviewer==='string'?candidate.reviewer:'';copy.image_only_confirmed=candidate.image_only_confirmed===true;
+ copy.samples.forEach((s,i)=>{const x=candidate.samples[i];if(x.sample_id!==s.sample_id||x.video_id!==s.video_id)throw Error('Mã nhóm ảnh không khớp.');
+  if(!Array.isArray(x.events)||x.events.length>3)throw Error('Danh sách event không hợp lệ.');
+  s.status=['pending','reviewed','skipped'].includes(x.status)?x.status:'pending';s.skip_reason=String(x.skip_reason||'');s.notes=String(x.notes||'');
+  s.events=x.events.map(e=>({text_vi:String(e.text_vi||''),text_en:String(e.text_en||''),english_approved:e.english_approved===true,judgments:Array.isArray(e.judgments)?e.judgments.map(j=>({sample_id:String(j.sample_id),keyframe_n:Number(j.keyframe_n),judgment:['positive','negative','unknown','unreviewed'].includes(j.judgment)?j.judgment:'unreviewed'})):[]}));
+ });return copy;
+}
+try{const saved=localStorage.getItem(key);if(saved){data=safeImport(JSON.parse(saved));seed();$('save-status').textContent='Đã khôi phục bản nháp cục bộ. Vẫn nên tải file JSON để sao lưu.';}}catch{ $('save-status').textContent='Không thể khôi phục/lưu nháp trình duyệt. Hãy dùng nút Tải bản nháp JSON.'; }
+function persist(){try{localStorage.setItem(key,JSON.stringify(data));$('save-status').textContent='Đã lưu nháp trong trình duyệt. Hãy tải file JSON trước khi đóng trang.';}catch{$('save-status').textContent='Không lưu được vào trình duyệt. Hãy bấm Tải bản nháp JSON.';}progress();}
+function message(text){const box=$('errors');box.hidden=false;box.textContent=text;box.focus();}
+function option(value,text){const o=document.createElement('option');o.value=value;o.textContent=text;return o;}
+function progress(){const n=data.samples.filter(s=>s.status==='reviewed'||s.status==='skipped').length;$('progress').max=data.samples.length;$('progress').value=n;$('progress-text').textContent=`Đã đánh dấu ${n}/${data.samples.length} nhóm · đang xem nhóm ${position+1}`;}
+function field(parent,labelText,value,onInput,multiline=false){const label=document.createElement('label'),input=document.createElement(multiline?'textarea':'input');input.id='field-'+Math.random().toString(36).slice(2);label.htmlFor=input.id;label.textContent=labelText;input.value=value;input.addEventListener('input',()=>{onInput(input.value);persist();});parent.append(label,input);return input;}
+function render(){
+ const s=data.samples[position];$('reviewer').value=data.reviewer;$('confirm').checked=data.image_only_confirmed;
+ $('jump').replaceChildren(...data.samples.map((sample,i)=>option(String(i),`${i+1}. ${sample.sample_id} · ${sample.video_id}`)));$('jump').value=String(position);
+ $('prev').disabled=position===0;$('next').disabled=position===data.samples.length-1;
+ $('sample-heading').textContent=`${s.sample_id} · ${s.video_id}`;$('sheet').src=s.contact_sheet;$('sheet').alt=`Ảnh contact sheet của ${s.sample_id}, mỗi ô ghi số keyframe và thời gian`;$('open-sheet').href=s.contact_sheet;
+ const downloaded=s.frames.filter(f=>f.status==='downloaded');$('availability').textContent=`Có ${downloaded.length}/${s.frames.length} ảnh đọc được. Ảnh lỗi không được phép gán nhãn.`;
+ $('sample-status').value=s.status;$('skip-reason').value=s.skip_reason;$('notes').value=s.notes;$('events').replaceChildren();
+ s.events.forEach((event,index)=>{
+  const div=document.createElement('div');div.className='event';const title=document.createElement('h3');title.textContent=`Event ${index+1}${index?' — xuất hiện sau event trước':''}`;div.append(title);
+  field(div,'Mô tả tiếng Việt: chi tiết nhìn thấy rõ',event.text_vi,v=>event.text_vi=v,true);
+  const english=field(div,'Tiếng Anh (tùy chọn; để trống nếu cần tôi dịch)',event.text_en,v=>{event.text_en=v;event.english_approved=false;approved.checked=false;},true);
+  const approval=document.createElement('label');approval.className='check';const approved=document.createElement('input');approved.type='checkbox';approved.checked=event.english_approved;approved.addEventListener('change',()=>{event.english_approved=approved.checked;persist();});approval.append(approved,document.createTextNode('Tôi đã kiểm tra câu tiếng Anh khớp ý tiếng Việt và ảnh.'));div.append(approval);
+  event.judgments.forEach(j=>{
+   const row=document.createElement('div');row.className='judgment';const label=document.createElement('label');label.textContent=`${j.sample_id} · n=${j.keyframe_n}`;
+   const select=document.createElement('select');select.id=`judge-${index}-${j.sample_id}-${j.keyframe_n}`;label.htmlFor=select.id;
+   [['unreviewed','Chưa xem / chưa quyết định'],['positive','Đúng đầy đủ mô tả (positive)'],['negative','Sai rõ một điều kiện (negative)'],['unknown','Không đủ rõ để kết luận (unknown)']].forEach(([v,t])=>select.append(option(v,t)));select.value=j.judgment;
+   select.addEventListener('change',()=>{j.judgment=select.value;persist();});row.append(label,select);div.append(row);
+  });
+  const extra=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Tùy chọn: thêm một ảnh đối chiếu từ nhóm khác';extra.append(summary);
+  const pickLabel=document.createElement('label');pickLabel.textContent='Ảnh sẽ thêm';const pick=document.createElement('select');pick.id=`extra-${index}`;pickLabel.htmlFor=pick.id;
+  data.samples.forEach(sample=>sample.frames.filter(f=>f.status==='downloaded').forEach(f=>{if(!event.judgments.some(j=>j.sample_id===sample.sample_id&&j.keyframe_n===f.keyframe_n))pick.append(option(`${sample.sample_id}:${f.keyframe_n}`,`${sample.sample_id} · n=${f.keyframe_n}`));}));
+  const add=document.createElement('button');add.type='button';add.className='secondary';add.textContent='Thêm ảnh vào bảng nhãn';add.disabled=!pick.options.length;add.addEventListener('click',()=>{const [id,n]=pick.value.split(':');event.judgments.push({sample_id:id,keyframe_n:Number(n),judgment:'unreviewed'});persist();render();});
+  extra.append(pickLabel,pick,add);div.append(extra);
+  if(index===s.events.length-1&&index>0){const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Bỏ event cuối này';remove.addEventListener('click',()=>{if(confirm('Bỏ event cuối và nhãn của event này?')){s.events.pop();persist();render();}});div.append(remove);}
+  $('events').append(div);
+ });$('add-event').disabled=s.events.length>=3||!downloaded.length||s.status==='skipped';progress();
+}
+function move(i){position=i;render();$('sample-heading').focus();}
+$('reviewer').addEventListener('input',e=>{data.reviewer=e.target.value;persist();});$('confirm').addEventListener('change',e=>{data.image_only_confirmed=e.target.checked;persist();});
+$('sample-status').addEventListener('change',e=>{data.samples[position].status=e.target.value;persist();render();});
+$('skip-reason').addEventListener('input',e=>{data.samples[position].skip_reason=e.target.value;persist();});$('notes').addEventListener('input',e=>{data.samples[position].notes=e.target.value;persist();});
+$('prev').onclick=()=>move(position-1);$('next').onclick=()=>move(position+1);$('jump').onchange=e=>move(Number(e.target.value));
+$('add-event').onclick=()=>{data.samples[position].events.push(eventFor(data.samples[position]));persist();render();};
+function download(draft){
+ const errors=[];if(!draft){if(!data.reviewer.trim())errors.push('Điền tên hoặc bí danh.');if(!data.image_only_confirmed)errors.push('Xác nhận tự xem ảnh để gán nhãn.');
+ data.samples.forEach(s=>{if(s.status==='skipped'){if(!s.skip_reason.trim())errors.push(`${s.sample_id}: ghi lý do bỏ qua.`);return;}if(s.status!=='reviewed'){errors.push(`${s.sample_id}: chưa đánh dấu đã xem hoặc bỏ qua.`);return;}
+ s.events.forEach((e,i)=>{const id=`${s.sample_id}, event ${i+1}`;if(!e.text_vi.trim())errors.push(`${id}: thiếu mô tả tiếng Việt.`);if(e.judgments.some(j=>j.judgment==='unreviewed'))errors.push(`${id}: còn ảnh chưa quyết định.`);if(!e.judgments.some(j=>j.sample_id===s.sample_id&&j.judgment==='positive'))errors.push(`${id}: cần ít nhất một ảnh đúng trong nhóm.`);});
+ if(s.events.length>1){let previous=null;s.events.forEach(e=>{const times=e.judgments.filter(j=>j.sample_id===s.sample_id&&j.judgment==='positive').map(j=>s.frames.find(f=>f.keyframe_n===j.keyframe_n)?.pts_time).filter(t=>typeof t==='number');previous=previous===null?times:times.filter(t=>previous.some(p=>t>p&&t-p<=60));});if(!previous.length)errors.push(`${s.sample_id}: chuỗi chưa có ảnh đúng tăng theo thời gian với khoảng cách mỗi bước không quá 60 giây. Giữ một event nếu không có chuỗi rõ.`);}
+ });}
+ if(errors.length){message(errors.join('\n'));return;}
+ $('errors').hidden=true;const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=draft?'human_annotations_draft.json':'human_annotations.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ $('save-status').textContent='Đã yêu cầu tải JSON. Kiểm tra thư mục Downloads; trình duyệt không tự ghi vào repository. Gửi file JSON lại trong cuộc trò chuyện.';
+}
+$('draft').onclick=()=>download(true);$('export').onclick=()=>download(false);
+$('import').addEventListener('change',async e=>{try{const file=e.target.files[0];if(!file)return;if(!confirm('Nạp file này thay cho bản nháp đang mở? Hãy tải bản nháp trước nếu cần giữ.'))return;data=safeImport(JSON.parse(await file.text()));seed();persist();render();$('errors').hidden=true;}catch(err){message('Không nạp được file: '+err.message);}finally{e.target.value='';}});
+render();
+</script>
+</html>

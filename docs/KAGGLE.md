@@ -1,5 +1,10 @@
 # Chuẩn bị dữ liệu trên Kaggle
 
+**Đã có keyframes, không cần xử lý video?** Dùng
+[`notebooks/keyframesprocessing.ipynb`](../notebooks/keyframesprocessing.ipynb)
+và xem [hướng dẫn từ keyframes](KAGGLE_FROM_KEYFRAMES.md). Runner mới giữ các
+stage feature/object/caption/index, yêu cầu mapping CSV gốc, không decode video.
+
 ## 1. Chọn gói code
 
 Chạy tại project root:

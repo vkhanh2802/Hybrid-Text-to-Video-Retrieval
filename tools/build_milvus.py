@@ -15,7 +15,8 @@ CLIP_DIR = CLIP_FEATURES_DIR
 CSV_DIR = MAPPING_DIR
 
 MILVUS_URI = "http://localhost:19530"
-COLLECTION_NAME = "clip_keyframes"
+# One collection per visual model; the old SigLIP collection stays untouched.
+COLLECTION_NAME = VISUAL_CONFIG.get("milvus_collection", "clip_keyframes")
 EMBEDDING_DIM = int(VISUAL_CONFIG["dimension"])
 VALID_MODES = ("build", "rebuild")
 

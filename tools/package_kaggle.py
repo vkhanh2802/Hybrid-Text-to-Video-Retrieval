@@ -8,14 +8,14 @@ from kis.paths import KIS_ROOT
 
 
 COMMON = (
-    "kis/__init__.py", "kis/artifact_io.py", "kis/paths.py", "kis/config.py",
-    "kis/objects.py", "kis/caption_schema.py",
+    "kis/__init__.py", "kis/artifact_io.py", "kis/paths.py", "kis/config.py", "kis/temporal.py",
+    "kis/objects.py", "kis/caption_schema.py", "kis/text_reranker.py", "kis/ocr.py",
     "kis/structured_caption.py", "kis/light_caption.py", "config/models.json",
     "config/object_labels.json", "tools/__init__.py", "tools/prepare_video_data.py",
     "tools/structured_caption_generator.py",
 )
 FULL_SOURCES = {name: name for name in (*COMMON, "tools/kaggle_prepare.py",
-    "tools/kaggle_keyframes_caption.py", "tools/audit_artifact_formats.py",
+    "tools/kaggle_keyframes_caption.py", "tools/kaggle_prepare_keyframes.py", "tools/audit_artifact_formats.py",
     "tools/ingest.py", "kis/visual.py")}
 FULL_SOURCES.update({"requirements-kaggle.txt": "config/requirements-kaggle.txt", "KAGGLE.md": "docs/KAGGLE.md"})
 FILES = tuple(FULL_SOURCES)

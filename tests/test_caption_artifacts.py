@@ -32,6 +32,35 @@ from kis.paths import (
 
 
 class CaptionArtifactTest(unittest.TestCase):
+    def test_explicit_group_scope_filters_before_artifact_and_image_traversal(self):
+        from kis.text import CaptionRetriever
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for group in ("L04", "L05", "L06"):
+                (root / group / f"{group}_V001").mkdir(parents=True)
+                (root / group / f"{group}_V001.json").write_text("[]", encoding="utf-8")
+                (root / group / f"{group}_V001/001.jpg").write_bytes(b"fixture")
+            original_iterdir, original_rglob = Path.iterdir, Path.rglob
+
+            def guarded_iterdir(path):
+                self.assertFalse({"L05", "L06"}.intersection(path.parts))
+                return original_iterdir(path)
+
+            def guarded_rglob(path, pattern):
+                self.assertNotEqual(path, root)
+                self.assertFalse({"L05", "L06"}.intersection(path.parts))
+                return original_rglob(path, pattern)
+
+            with patch.object(Path, "iterdir", guarded_iterdir), patch.object(Path, "rglob", guarded_rglob):
+                artifacts = CaptionRetriever._collect_artifact_map(root, "L*_V*.json", {"L04"})
+                self.assertEqual(set(artifacts), {"L04_V001"})
+                self.assertEqual(set(discover_video_image_dirs(root, video_groups=("L04",))), {"L04_V001"})
+                self.assertEqual(resolve_video_artifact(root, "L04_V001", ".json", video_groups=("L04",)),
+                                 root / "L04/L04_V001.json")
+                with patch.dict("os.environ", {"KIS_VIDEO_GROUPS": "L04"}):
+                    self.assertEqual(resolve_video_artifact(root, "L04_V001", ".json"), root / "L04/L04_V001.json")
+
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.root = Path(self.temp_dir.name)
@@ -52,7 +81,7 @@ class CaptionArtifactTest(unittest.TestCase):
                 "L26_V001",
                 ".json",
             ),
-            artifact_root / "L26" / "L26_V001.json",
+            artifact_root / "L26" / "L26_V001" / "L26_V001.json",
         )
         self.assertEqual(
             resolve_video_artifact(artifact_root, "L26_V001", ".json"),

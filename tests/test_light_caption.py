@@ -121,7 +121,7 @@ class InternVLCaptionTest(unittest.TestCase):
             generate_structured_captions_with_mapping(**kwargs)
             generate_structured_captions_with_mapping(**kwargs)
             self.assertEqual(captioner.calls, 1)
-            path = root / "caption_generator" / "L19" / "L19_V001.json"
+            path = root / "caption_generator" / "L19" / "L19_V001" / "L19_V001.json"
             records = json.loads(path.read_text())
             self.assertEqual([r["frame_id"] for r in records], [10, 20])
             self.assertTrue(all("visual_description" not in r and r["vqa_answers"] == {} for r in records))

@@ -135,11 +135,11 @@ def static_weight_fusion_3_way(visual_results, bm25_results, semantic_results,
     return sorted(candidates.values(), key=lambda item: item["score"], reverse=True)
 
 
-def finalize_vlm_ranking(candidates, top_k=20, vlm_weight=0.5):
+def finalize_vlm_ranking(candidates, top_k=20, vlm_weight=0.5, base_score_field="score"):
     if not 0.0 <= vlm_weight <= 1.0:
         raise ValueError("vlm_weight must be between 0 and 1")
     for item in candidates:
-        retrieval = float(item["score"])
+        retrieval = float(item.get(base_score_field, item["score"]))
         if not math.isfinite(retrieval):
             raise ValueError("Candidate contains a non-finite retrieval score")
         item["final_score"] = retrieval
@@ -149,7 +149,7 @@ def finalize_vlm_ranking(candidates, top_k=20, vlm_weight=0.5):
         if not isinstance(raw_score, (int, float)) or not math.isfinite(raw_score):
             continue
         applied = True
-        retrieval = max(0.0, min(1.0, float(item["score"])))
+        retrieval = max(0.0, min(1.0, float(item.get(base_score_field, item["score"]))))
         delta = max(0.0, min(10.0, float(raw_score))) / 10.0 - 0.5
         item["final_score"] = retrieval + 2.0 * vlm_weight * delta * (1.0 - retrieval if delta >= 0.0 else retrieval)
     return sorted(candidates, key=lambda item: item["final_score"], reverse=True), applied

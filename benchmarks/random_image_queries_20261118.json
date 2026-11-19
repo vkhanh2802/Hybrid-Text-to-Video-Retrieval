@@ -1,0 +1,11 @@
+{
+  "name": "Five frozen image-authored exploratory queries, L01-L21 active dataset",
+  "seed": 20261118,
+  "queries": [
+    {"id": "q1", "query": "Hai người dẫn bản tin đứng sau bàn có biểu tượng 6 giờ, nam đeo kính mặc sơ mi xanh nhạt và cà vạt, nữ mặc váy tối màu kẻ ô, phía sau là thành phố lúc bình minh."},
+    {"id": "q2", "query": "Cận cảnh một người đàn ông tóc ngắn hoa râm, mặc áo khoác xanh rêu bên ngoài áo có cổ màu xám, đang nói trước bức tường màu kem trơn."},
+    {"id": "q3", "query": "Hình camera an ninh nhìn chéo xuống hiên nhà lát gạch hoa: vài người đội mũ bảo hiểm ngồi trên xe máy, cạnh cửa có biển đỏ chữ vàng và một chiếc ghế gỗ."},
+    {"id": "q4", "query": "Khung hình đồ họa chuyển cảnh bản tin với những dải chéo lớn màu đỏ và trắng, một mảng xám ở bên trái, không thấy người."},
+    {"id": "q5", "query": "Một người đàn ông đeo kính râm mặc áo xanh dương dài tay giơ điện thoại lên chụp ảnh ngoài phố, cạnh một phụ nữ áo trắng đội mũ lưỡi trai đen cũng cầm điện thoại; phía sau có nhiều cờ đỏ và tòa nhà trắng."}
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "annotation_source": "ai_visual_observation",
+  "human_verified": false,
+  "note": "Written from Drive contact sheets before retrieval evaluation; no caption corpus consulted. Sparse-frame shot order, not continuous action or causal proof.",
+  "excluded_samples": [{"sample_id": "drive_05", "reason": "All five Drive images failed to fetch; no label invented or replacement sampled"}],
+  "samples": [
+    {
+      "sample_id": "drive_01", "video_id": "L03_V006",
+      "image": {
+        "raw_query": "Nhìn từ lòng một chiếc thuyền chở cát trên sông nước nâu; có lốp xe trên boong và người mặc áo phao màu cam phía trước.",
+        "english": "A view along the sand-filled deck of a boat on a muddy river, with black tires on the deck and people in orange life jackets at the far end.",
+        "keywords": "sand filled boat deck black tires muddy river orange life jackets",
+        "relevant_keyframes": [133]
+      },
+      "sequence": {
+        "raw_query": "Đầu tiên nhìn dọc thuyền chở cát trên sông, sau đó thấy hai người mặc áo phao cam đứng cùng người mặc áo sọc, cuối cùng là cận cảnh cát và các vũng nước trên thuyền.",
+        "english": "A view along a sand-filled boat deck is followed by two men in orange life jackets beside a man in a striped shirt, then a close-up of wet sand and puddles in the boat.",
+        "keywords": "sand boat deck orange life jackets striped shirt wet sand puddles",
+        "events": ["A view along a sand-filled boat deck shows tires and a muddy river.", "Two men in orange life jackets stand beside a man in a striped shirt on the boat.", "A close-up shows wet sand and puddles inside the boat."],
+        "event_relevant_keyframes": [[133], [134], [135]]
+      }
+    },
+    {
+      "sample_id": "drive_02", "video_id": "L16_V028",
+      "image": {
+        "raw_query": "Một người đội mũ đỏ, mặc áo phản quang vàng, bị cây cỏ cao che một phần trong cảnh ngoài trời tối.",
+        "english": "A person wearing a red peaked cap and a reflective yellow vest is partly obscured by tall vegetation in a dark outdoor scene.",
+        "keywords": "red peaked cap yellow reflective vest dark tall vegetation",
+        "relevant_keyframes": [316]
+      },
+      "sequence": {
+        "raw_query": "Cảnh người đội mũ đỏ, mặc áo phản quang vàng giữa cây cỏ tối, sau đó chuyển sang nữ dẫn chương trình mặc áo hồng, cầm thẻ đỏ cạnh màn hình đồ họa vàng.",
+        "english": "A person in a red cap and yellow reflective vest among dark vegetation is followed by a female news presenter in a pink blouse holding a red cue card beside a yellow graphic screen.",
+        "keywords": "red cap reflective vest vegetation then pink blouse female presenter yellow screen",
+        "events": ["A person in a red cap and yellow reflective vest is partly hidden by tall vegetation in the dark.", "A female presenter in a pink blouse holds a red cue card beside a yellow graphic screen."],
+        "event_relevant_keyframes": [[316], [317, 318]]
+      }
+    },
+    {
+      "sample_id": "drive_03", "video_id": "L09_V011",
+      "image": {
+        "raw_query": "Nam dẫn chương trình mặc sơ mi tím, cà vạt sọc sáng, cầm thẻ đỏ trước nền đường chân trời thành phố màu cam.",
+        "english": "A male news presenter in a purple shirt and a light striped tie holds a red cue card in front of an orange city skyline backdrop.",
+        "keywords": "male presenter purple shirt light striped tie red cue card orange skyline",
+        "relevant_keyframes": [120, 121]
+      },
+      "sequence": {
+        "raw_query": "Ô tô bạc có đầu xe hư hỏng nằm cạnh cỏ xanh, rồi nam dẫn chương trình áo tím, sau đó là cảnh đường ngập nước quay dọc.",
+        "english": "A silver car with a badly damaged front beside green roadside grass is followed by a male presenter in a purple shirt, then a vertically framed flooded street scene.",
+        "keywords": "damaged silver car green grass purple shirt presenter vertical flooded street",
+        "events": ["A silver car with a crushed front stands beside green roadside grass.", "A male presenter in a purple shirt and striped tie holds a red cue card before an orange skyline.", "A vertically framed shot shows a flooded street."],
+        "event_relevant_keyframes": [[118, 119], [120, 121], [122]]
+      }
+    },
+    {
+      "sample_id": "drive_04", "video_id": "L08_V002",
+      "image": {
+        "raw_query": "Cận cảnh tay đeo găng cầm túi mì màu bạc xanh trên bàn kim loại cạnh nhiều vắt mì vàng; người làm mặc áo vàng viền xanh.",
+        "english": "Gloved hands hold a silver and green noodle packet over a metal worktable beside piles of yellow noodle nests, with a yellow and blue work shirt visible.",
+        "keywords": "gloved hands silver green noodle packet yellow noodle nests metal worktable",
+        "relevant_keyframes": [50]
+      },
+      "sequence": {
+        "raw_query": "Toàn cảnh công nhân áo vàng đóng gói mì, sau đó cận cảnh công nhân đội mũ xanh đeo khẩu trang, rồi tay đeo găng cầm túi mì cạnh vắt mì, cuối cùng công nhân mặc áo xanh đội mũ xanh.",
+        "english": "A wide shot of yellow-shirted workers packing noodles is followed by masked workers in blue caps, gloved hands holding a noodle packet beside noodle nests, and then a masked worker in a blue shirt and blue cap.",
+        "keywords": "noodle packing yellow shirts blue caps masks gloved hands packet blue shirt worker",
+        "events": ["A wide shot shows yellow-shirted workers packing noodles around a worktable.", "A closer shot shows masked workers wearing yellow shirts and blue caps.", "Gloved hands hold a silver and green packet beside yellow noodle nests.", "A masked worker in a blue shirt and blue cap works at the packing station."],
+        "event_relevant_keyframes": [[48], [49], [50], [52]]
+      }
+    },
+    {
+      "sample_id": "drive_06", "video_id": "L02_V015",
+      "image": {
+        "raw_query": "Nam dẫn chương trình đeo kính, mặc sơ mi hồng sáng và cà vạt nhạt, cầm thẻ đỏ sau bàn trắng trước nền thành phố hoàng hôn cam.",
+        "english": "A male news presenter with glasses, a bright pink shirt and a pale tie holds a red cue card behind a white desk, with an orange sunset city skyline behind him.",
+        "keywords": "male presenter glasses bright pink shirt pale tie red cue card white desk orange skyline",
+        "relevant_keyframes": [181, 182, 183]
+      },
+      "sequence": {
+        "raw_query": "Người mặc đồng phục màu be cúi cạnh xe máy đổ trên vỉa hè, tiếp theo là xe buýt trắng trên đường, rồi nam dẫn chương trình áo hồng đeo kính.",
+        "english": "A person in a tan uniform bends beside a fallen scooter on a sidewalk, followed by a white bus on the street, and then a male news presenter with glasses and a pink shirt.",
+        "keywords": "tan uniform fallen scooter sidewalk white bus pink shirt glasses presenter",
+        "events": ["A person in a tan uniform bends beside a fallen scooter on a sidewalk.", "A white bus faces the camera on a street beside buildings.", "A male presenter with glasses and a bright pink shirt holds a red cue card behind a white desk."],
+        "event_relevant_keyframes": [[179], [180], [181, 182, 183]]
+      }
+    },
+    {
+      "sample_id": "drive_07", "video_id": "L10_V026",
+      "image": {
+        "raw_query": "Nữ dẫn chương trình tóc ngắn, mặc váy đỏ rượu vang, cầm thẻ đỏ bên cạnh màn hình đồ họa vàng cam.",
+        "english": "A short-haired female news presenter in a burgundy dress holds a red cue card beside a screen filled with a yellow and orange graphic.",
+        "keywords": "short hair female presenter burgundy dress red cue card yellow orange graphic screen",
+        "relevant_keyframes": [207, 208, 209]
+      },
+      "sequence": {
+        "raw_query": "Nữ dẫn chương trình váy đỏ rượu vang, sau đó chuyển sang nam áo kẻ đen trắng cúi đầu, rồi nam áo vàng nâu ngồi với tay gần cằm.",
+        "english": "A female presenter in a burgundy dress is followed by a seated man in a black and white checked shirt looking downward, then a seated man in a mustard shirt with one hand near his chin.",
+        "keywords": "burgundy dress presenter black white checked shirt man mustard shirt hand chin",
+        "events": ["A short-haired female presenter in a burgundy dress holds a red cue card beside a yellow graphic screen.", "A seated man wearing a black and white checked shirt looks downward.", "A seated man in a mustard shirt holds one hand near his chin."],
+        "event_relevant_keyframes": [[207, 208, 209], [210], [211]]
+      }
+    },
+    {
+      "sample_id": "drive_08", "video_id": "L17_V026",
+      "image": {
+        "raw_query": "Hai người mặc áo sáng màu và quần tối đứng cạnh ngọn lửa màu cam giữa bụi cây xanh và khói dày.",
+        "english": "Two people in light shirts and dark trousers stand beside orange flames amid dense green brush and thick smoke.",
+        "keywords": "two people light shirts dark trousers orange flames green brush thick smoke",
+        "relevant_keyframes": [144, 145]
+      },
+      "sequence": {
+        "raw_query": "Toàn cảnh đám cháy trên sườn đồi nhiều khói, sau đó hai người áo sáng màu cạnh lửa trong bụi cây, rồi một người cầm vòi trước đám lửa lớn trên nền tối.",
+        "english": "A wide view of a smoky hillside fire is followed by two people in light shirts beside flames in green brush, then a person holding a hose in front of large flames against a dark background.",
+        "keywords": "wide hillside fire smoke two people light shirts brush then hose large flames dark background",
+        "events": ["A wide shot shows flames and thick smoke across a green hillside.", "Two people in light shirts stand beside flames in dense green brush and smoke.", "A person holding a hose stands in front of large flames against a dark background."],
+        "event_relevant_keyframes": [[143], [144, 145], [147]]
+      }
+    }
+  ]
+}

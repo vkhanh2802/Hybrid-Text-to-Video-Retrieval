@@ -187,9 +187,9 @@ class BuildMilvusTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Duplicate visual"):
                 build_milvus.preflight_inputs()
 
-    def test_data_after_l21_is_excluded_before_validation(self):
+    def test_data_after_max_group_is_excluded_before_validation(self):
         self.write_video()
-        (self.clip_dir / "L22_V001.npy").write_bytes(b"unused data need not be valid")
+        (self.clip_dir / "L25_V001.npy").write_bytes(b"unused data need not be valid")
         with patch.object(build_milvus, "CLIP_DIR", self.clip_dir), patch.object(build_milvus, "CSV_DIR", self.csv_dir):
             files, total = build_milvus.preflight_inputs()
         self.assertEqual([path.stem for path in files], ["L01_V001"])
@@ -214,7 +214,7 @@ class BuildMilvusTest(unittest.TestCase):
         self.run_with_client("rebuild", client)
 
         target = client.aliases[build_milvus.COLLECTION_NAME]
-        self.assertTrue(target.startswith("clip_keyframes__staging_"))
+        self.assertTrue(target.startswith(f"{build_milvus.COLLECTION_NAME}__staging_"))
         self.assertEqual(client.row_counts[target], 2)
         self.assertNotIn(build_milvus.COLLECTION_NAME, client.collections)
         self.assertFalse(any("__backup_" in name for name in client.collections))

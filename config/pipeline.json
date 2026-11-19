@@ -1,6 +1,67 @@
 {
   "schema_version": 1,
   "caption_root": "dataset",
-  "video_groups": ["L01", "L02", "L03", "L07", "L08", "L09", "L10", "L11", "L12", "L13", "L14", "L15", "L16", "L17", "L18", "L19", "L20", "L21"],
-  "retrieval_profile": "rrf"
+  "video_groups": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10",
+    "L11",
+    "L12",
+    "L13",
+    "L14",
+    "L15",
+    "L16",
+    "L17",
+    "L18",
+    "L19",
+    "L20",
+    "L21",
+    "L22",
+    "L23",
+    "L24"
+  ],
+  "retrieval_profile": "rrf",
+  "ocr": {
+    "mode": "off",
+    "top_k": 50,
+    "max_queries": 4,
+    "min_confidence": 0.5,
+    "weight": 0.5,
+    "region": "all"
+  },
+  "text_reranker": {
+    "mode": "off",
+    "model": "cross-encoder/ms-marco-MiniLM-L6-v2",
+    "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+    "pool_size": 100,
+    "batch_size": 16,
+    "max_pairs": 1200,
+    "chunk_chars": 1200,
+    "max_chunks": 4,
+    "max_length": 512,
+    "query_chars": 1600
+  },
+  "temporal": {
+    "enabled": true,
+    "max_events": 6,
+    "event_top_k": 50,
+    "max_videos": 12,
+    "max_frames_per_video": 1500,
+    "max_gap_seconds": 60.0,
+    "gap_penalty": 0.001,
+    "min_visual_similarity": 0.25,
+    "min_semantic_similarity": 0.45
+  },
+  "legacy_caption_groups": [
+    "L22",
+    "L23",
+    "L24"
+  ]
 }

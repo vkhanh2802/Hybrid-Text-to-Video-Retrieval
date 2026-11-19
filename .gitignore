@@ -55,3 +55,9 @@ venv/
 # IDE
 .vscode/
 .idea/
+
+# Agent/tool state and packaged build outputs
+/.claude/
+/.impeccable/
+/kis-kaggle-code.zip
+/notebooks/videoprocessing.ipynb

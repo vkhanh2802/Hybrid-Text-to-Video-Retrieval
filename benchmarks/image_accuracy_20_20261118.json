@@ -1,0 +1,25 @@
+{
+  "name": "20 image-authored Vietnamese retrieval queries frozen before search",
+  "queries": [
+    {"id": "a01", "query": "Cận cảnh nhiều chiếc bánh su hình tròn màu vàng ruộm, vỏ bánh phồng và có những nếp gợn, các bánh nằm sát nhau."},
+    {"id": "a02", "query": "Đồ họa chuyển cảnh bản tin với những dải cong lớn màu trắng và xám xoay quanh một khối đỏ bóng, nền có các mảng đỏ và trắng."},
+    {"id": "a03", "query": "Khu cây về đêm được chiếu ánh sáng hồng tím, trên nền tối có nhiều đốm sáng và vệt sáng như một màn trình diễn ánh sáng ngoài trời."},
+    {"id": "a04", "query": "Trong phòng có nhiều thùng các-tông xếp phía sau, một người mặc đồng phục xanh có cầu vai ngồi bên phải bàn đối diện người áo sơ mi sáng màu; vài người khác đứng bên trái, trên tường có màn hình và hai quạt."},
+    {"id": "a05", "query": "Hình camera từ trên cao nhìn xuống vỉa hè lát gạch, nhiều xe máy đỗ sát mặt tiền bên phải, mái hiên chạy chéo phía trên có những lá cờ tam giác tối màu treo xuống."},
+    {"id": "a06", "query": "Đồ họa chữ \"60 giây\" lớn màu vàng cam đặt trước đường chân trời thành phố bên sông lúc hoàng hôn, ánh đèn phản chiếu xuống mặt nước."},
+    {"id": "a07", "query": "Hai người dẫn bản tin trước nền thành phố màu cam đỏ: nam đeo kính mặc áo vest sẫm đứng sau bàn trắng ghi \"60 giây\", nữ mặc váy hồng nhạt dài đến gối đứng bên phải bàn."},
+    {"id": "a08", "query": "Nhiều quả sầu riêng chất thành đống lớn ngoài vườn, phía sau có nhóm người đội mũ đang làm việc và bên phải là người đội mũ rộng vành."},
+    {"id": "a09", "query": "Dãy chậu cây hoa vàng đặt sát lề đường phố, xen các chậu hoa thấp hơn; cận cảnh cành hoa vàng ở bên phải khung hình."},
+    {"id": "a10", "query": "Cận cảnh một phụ nữ tóc đen buộc gọn, mặc áo sơ mi xanh nhạt có cổ, đang nhìn sang bên cạnh; nền phía sau sáng và mờ."},
+    {"id": "a11", "query": "Một tàu có mạn xanh dương và phần phủ bạt xanh lá bị nghiêng mạnh trên mặt biển, có người mặc áo phao cam ở phần mũi bên trái và cabin trắng ở bên phải khung hình."},
+    {"id": "a12", "query": "Chiếc xe kiểu xe đua màu đỏ, bánh xe để lộ ra ngoài, chạy trên con đường giữa cây cối dưới trời xanh; góc quay thấp từ bên hông thấy bánh trước rất lớn."},
+    {"id": "a13", "query": "Đường bê tông trước nhà bị sụt gãy, các tấm bê tông nghiêng và để lộ hố đất lớn ở mép đường, xung quanh có cây dừa."},
+    {"id": "a14", "query": "Một nam dẫn chương trình đeo kính, mặc sơ mi xanh nhạt và cà vạt sọc, đứng sau bàn trắng có biểu tượng \"60 giây\", nền là toàn cảnh thành phố màu vàng lúc bình minh."},
+    {"id": "a15", "query": "Cận cảnh lỗ thoát âm và dây đàn của một cây đàn guitar gỗ màu vàng nâu; viền lỗ có hoa văn tròn, bên phải là mảng vân nâu đỏ sẫm."},
+    {"id": "a16", "query": "Một người đeo kính mặc áo trắng đang treo ngược đầu xuống từ trần, dùng kéo cắt tóc cho người ngồi phía dưới trong phòng cắt tóc."},
+    {"id": "a17", "query": "Một người đàn ông tóc bạc mặc áo sơ mi xám đứng cạnh máy bay nhỏ màu trắng, tựa cánh tay lên phần mũi xanh của cánh quạt đen; phía sau là bãi đất và cây xanh."},
+    {"id": "a18", "query": "Một người đội mũ rộng vành màu xanh ngọc, mặc áo dài tay có hoa văn sẫm và quần màu nâu nhạt đang cúi người làm việc trên luống đất; phía sau là các cọc dựng thành hàng và đồi cây."},
+    {"id": "a19", "query": "Một tay đua xe đạp mặc áo trắng chấm đỏ, đội mũ sọc đen trắng đang đạp trên đường; phía sau có xe mô tô đi kèm và nhiều xe ô tô kiểu xe nhà lưu động đậu bên đường."},
+    {"id": "a20", "query": "Con đường rợp bóng cây cao, nhiều xe khách lớn và ô tô nối đuôi nhau, giữa đường có người đi xe máy; bên phải là hàng cây và vỉa hè."}
+  ]
+}

@@ -145,7 +145,7 @@ class StructuredCaptionTest(unittest.TestCase):
                 image_root=root / "data", csv_root=root / "mapping", output_dir=root / "captions",
                 video_ids=["L19_V001"], path_root=root, captioner=captioner, batch_size=16,
             )
-            records = json.loads((root / "captions" / "L19" / "L19_V001.json").read_text())
+            records = json.loads((root / "captions" / "L19" / "L19_V001" / "L19_V001.json").read_text())
             self.assertEqual(captioner.sizes, [16, 2])
             self.assertEqual([item["frame_id"] for item in records], [n * 10 for n in range(1, 19)])
             self.assertEqual([item["generation_batch_size"] for item in records], [16] * 16 + [2] * 2)
@@ -182,7 +182,7 @@ class StructuredCaptionTest(unittest.TestCase):
                     image_root=root / "data", csv_root=root / "mapping", output_dir=root / "captions",
                     video_ids=["L19_V001"], path_root=root, captioner=Captioner(), batch_size=4,
                 )
-            saved = json.loads((root / "captions" / "L19" / "L19_V001.json").read_text())
+            saved = json.loads((root / "captions" / "L19" / "L19_V001" / "L19_V001.json").read_text())
             self.assertEqual([item["keyframe_n"] for item in saved], [1, 2])
 
     def test_failed_numerical_generation_does_not_publish_a_placeholder(self):
@@ -202,7 +202,7 @@ class StructuredCaptionTest(unittest.TestCase):
                     image_root=root / "data", csv_root=root / "mapping", output_dir=root / "captions",
                     video_ids=["L19_V001"], path_root=root, captioner=BadCaptioner(),
                 )
-            self.assertFalse((root / "captions" / "L19" / "L19_V001.json").exists())
+            self.assertFalse((root / "captions" / "L19" / "L19_V001" / "L19_V001.json").exists())
 
     @unittest.skipUnless(importlib.util.find_spec("torch"), "requires torch")
     def test_runtime_uses_native_bf16_or_fp32_not_emulated_bf16_or_fp16(self):
@@ -395,7 +395,7 @@ class StructuredCaptionTest(unittest.TestCase):
             generate_structured_captions_with_mapping(**kwargs)
             generate_structured_captions_with_mapping(**kwargs)
             self.assertEqual(captioner.calls, 1)
-            path = root / "v2" / "caption_generator" / "L19" / "L19_V001.json"
+            path = root / "v2" / "caption_generator" / "L19" / "L19_V001" / "L19_V001.json"
             saved = json.loads(path.read_text(encoding="utf-8"))
             self.assertEqual([record["keyframe_n"] for record in saved], [2])
             self.assertEqual(saved[0]["frame_id"], 20)

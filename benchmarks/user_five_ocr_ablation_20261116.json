@@ -1,0 +1,41 @@
+{
+  "schema": "user_sparse_keyframe_positives_v1",
+  "ground_truth_unit": "keyframe_n, not frame_idx",
+  "queries": [
+    {
+      "id": "q1",
+      "query": "Một người phụ nữ nữ tóc bạc mặc một chiếc áo màu xanh đang phát biểu, đằng sau là một bảng có ghi dòng chữ Liên hoan dân ca Việt - Nhật Lễ trao giải cuộc thi,...",
+      "supplied_ground_truth": "L01_v003 031, hoặc 032 hoặc 033",
+      "video_id": "L01_V003",
+      "keyframes": [31, 32, 33]
+    },
+    {
+      "id": "q2",
+      "query": "Cảnh quay một đoàn xe ô tô đang di chuyển nối đuôi nhau ở ngoài đường, chính giữa là hai chiếc xe màu xanh lá cây, xung quanh là xe màu trắng. Phía sau là toàn nhà và cây cối",
+      "supplied_ground_truth": "L001_V021 076",
+      "video_id": "L01_V021",
+      "keyframes": [76]
+    },
+    {
+      "id": "q3",
+      "query": "Cảnh quya một người đàn ông màu đỏ đang đứng nói chuyện, đằng sau là một hàng người đang xếp hàng ở một quán. Phía dưới bảng tin còn có dòng chữ liên quan đến việc video Youtube về tin giả xung dột Isreal-Hamas",
+      "supplied_ground_truth": "L01_V017 197 hoặc 198",
+      "video_id": "L01_V017",
+      "keyframes": [197, 198]
+    },
+    {
+      "id": "q4",
+      "query": "Cảnh quay một người đàn ông đang biểu diễn, trên tay cầm chiếc đàn ghi ta và đang hát trước mic. Phía dưới có dòng chữ: Đấu giá xe buýt lưu diễn của cựu thành viên The Beatles",
+      "supplied_ground_truth": "L002_V014 164",
+      "video_id": "L02_V014",
+      "keyframes": [164]
+    },
+    {
+      "id": "q5",
+      "query": "Cảnh quay gồm nhiều chiếc nôi em bé trên đó có hình ảnh của các nạn nhân bị chết trong chiến tranh, phái dưới có dòng chữ CRIF: Tổ chức các hoạt động kêu gọi Hamas ưu tiên thả con tin trẻ em",
+      "supplied_ground_truth": "L02_V005 101 hoặc 102. ",
+      "video_id": "L02_V005",
+      "keyframes": [101, 102]
+    }
+  ]
+}

@@ -5,81 +5,172 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="KIS video keyframe retrieval interface">
   <title>KIS Framefinder</title>
-  <link rel="stylesheet" href="/assets/styles.css">
-  <script src="/assets/app.js" defer></script>
+  <link rel="stylesheet" href="/assets/styles.css?v=console-20261120b">
+  <script src="/assets/app.js?v=console-20261120b" defer></script>
 </head>
 <body>
   <header class="masthead">
     <a class="brand" href="/" aria-label="KIS Framefinder home">
-      <span class="brand-mark">KIS</span>
-      <span class="brand-name">Framefinder</span>
+      <span class="brand-mark">K</span>
+      <span class="brand-text">
+        <span class="eyebrow">HCMC AI Challenge</span>
+        <span class="brand-name">Known-Item Search <span>/ console</span></span>
+      </span>
     </a>
-    <div class="system-state" id="system-state">
-      <span class="state-dot" aria-hidden="true"></span>
-      <span id="state-text">Chưa nạp model</span>
+    <div class="masthead-meta">
+      <a class="pill" href="/?mode=manual">Tự nhập query</a>
+      <a class="pill" href="/">Đề DRES</a>
+      <div class="system-state pill" id="system-state">
+        <span class="state-dot" aria-hidden="true"></span>
+        <span id="state-text">Chưa nạp model</span>
+      </div>
     </div>
   </header>
 
-  <main>
-    <section class="search-hero" aria-labelledby="page-title">
-      <div class="hero-index" aria-hidden="true">01 / SEARCH</div>
-      <h1 id="page-title">Tìm đúng khoảnh khắc<br>trong kho video.</h1>
-      <form id="search-form" class="search-form">
-        <label for="query">Mô tả cảnh bạn cần tìm</label>
-        <div class="query-shell">
-          <textarea
-            id="query"
-            name="query"
-            rows="3"
-            maxlength="8000"
-            placeholder="Ví dụ: Hai người ngồi trên thuyền, người đàn ông mặc áo xanh và đội mũ trắng..."
-            required
-          ></textarea>
-          <div class="query-actions">
-            <span id="char-count" class="char-count">0 / 8000</span>
-            <button id="search-button" type="submit">
-              <span>Tìm top 20</span>
-              <span aria-hidden="true">↗</span>
-            </button>
+  <div class="console">
+    <aside class="pane pane-search" aria-label="Tìm kiếm">
+      <section class="search-hero" aria-labelledby="page-title">
+        <p class="eyebrow" aria-hidden="true">Search</p>
+        <h1 id="page-title">Tìm theo đề DRES.</h1>
+        <form id="search-form" class="search-form">
+          <div class="query-shell">
+            <p id="official-query-source" class="official-query-source">Đăng nhập DRES để dùng đề chính thức. Không cần nhập text hay tải video.</p>
+            <div id="manual-query-panel" class="video-description-panel" hidden>
+              <label for="manual-query">Mô tả cảnh cần tìm</label>
+              <textarea id="manual-query" rows="5" maxlength="8000" disabled
+                placeholder="Nhập query tiếng Việt hoặc tiếng Anh…"
+                aria-describedby="manual-query-hint"></textarea>
+              <p id="manual-query-hint" class="search-note">Enter để tìm · Shift+Enter xuống dòng.</p>
+            </div>
+            <div id="dres-video-description-panel" class="video-description-panel" hidden>
+              <label for="dres-video-description">Text bổ sung cho query video <span>(không bắt buộc)</span></label>
+              <textarea id="dres-video-description" rows="3" maxlength="2000" disabled
+                placeholder="Ví dụ: Tập trung vào người mặc áo đỏ bên phải, đang cầm một chiếc cốc…"
+                aria-describedby="dres-video-description-hint dres-video-description-count"></textarea>
+              <div class="description-meta">
+                <p id="dres-video-description-hint">Video vẫn lấy từ DRES.</p>
+                <span id="dres-video-description-count">0 / 2000</span>
+              </div>
+            </div>
+            <div class="query-actions">
+              <span class="char-count">NGUỒN: DRES</span>
+              <button id="search-button" type="submit" disabled>
+                <span>Tìm theo đề DRES</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </div>
+          <p id="search-note" class="search-note">Mỗi lần Tìm sẽ đọc lại toàn bộ đề DRES của task.</p>
+        </form>
+      </section>
+
+      <section id="loading" class="loading-panel" hidden aria-live="polite">
+        <div class="loader" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div>
+          <strong id="loading-title">Đang phân tích và tìm kiếm</strong>
+          <p id="loading-description"></p>
+        </div>
+      </section>
+
+      <section id="error-panel" class="error-panel" hidden role="alert" tabindex="-1">
+        <span>SEARCH ERROR</span>
+        <p id="error-message"></p>
+      </section>
+    </aside>
+
+    <main class="pane pane-results" aria-label="Kết quả tìm kiếm">
+      <section id="results-section" class="results-section" hidden aria-labelledby="results-title">
+        <div class="results-heading">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2 id="results-title">Top 200 frames</h2>
+          </div>
+          <div class="run-meta">
+            <button id="similar-back" class="similar-back" type="button" hidden>← Kết quả trước</button>
+            <span id="result-count">0 kết quả</span>
+            <span id="elapsed-time">0.00 giây</span>
           </div>
         </div>
-        <p class="search-note">Lần tìm đầu tiên sẽ lâu hơn vì hệ thống cần nạp model và index vào RAM.</p>
-      </form>
-    </section>
 
-    <section id="loading" class="loading-panel" hidden aria-live="polite">
-      <div class="loader" aria-hidden="true"><span></span><span></span><span></span></div>
-      <div>
-        <strong id="loading-title">Đang phân tích và tìm kiếm</strong>
-        <p>Giữ trang này mở. SigLIP, caption retrieval và VLM đang xử lý truy vấn.</p>
+        <p id="query-planner-status" class="search-note" role="status" hidden></p>
+        <p id="query-context" class="search-note" hidden></p>
+        <p id="llm-scoring-note" class="search-note"></p>
+        <details id="query-details" class="query-details">
+          <summary>Query variants hệ thống đã dùng</summary>
+          <ol id="query-variants"></ol>
+        </details>
+
+        <div id="results-grid" class="results-grid"></div>
+        <section id="temporal-results-section" hidden aria-labelledby="temporal-results-title">
+          <h3 id="temporal-results-title">Chuỗi sự kiện bổ sung</h3>
+          <div id="temporal-results-grid" class="results-grid"></div>
+        </section>
+      </section>
+      <div class="empty-state">
+        <p class="eyebrow">Results</p>
+        <h2>Chưa có truy vấn</h2>
       </div>
-    </section>
+    </main>
 
-    <section id="error-panel" class="error-panel" hidden role="alert">
-      <span>SEARCH ERROR</span>
-      <p id="error-message"></p>
-    </section>
+    <aside class="pane pane-dres" aria-label="DRES">
+      <p id="dres-status" class="dres-status" role="status" aria-live="polite">Chưa kết nối DRES.</p>
 
-    <section id="results-section" class="results-section" hidden aria-labelledby="results-title">
-      <div class="results-heading">
-        <div>
-          <div class="hero-index">02 / RESULTS</div>
-          <h2 id="results-title">Top 20 frames</h2>
+      <section id="dres-task-panel" class="dres-task-panel" hidden aria-labelledby="dres-task-title">
+        <div class="dres-heading">
+          <div><p class="eyebrow">DRES / Current task</p><h2 id="dres-task-title">Đề hiện tại</h2></div>
         </div>
-        <div class="run-meta">
-          <span id="result-count">0 kết quả</span>
-          <span id="elapsed-time">0.00 giây</span>
+        <div class="dres-actions">
+          <a id="dres-viewer" target="_blank" rel="noopener noreferrer" hidden>Mở DRES ↗</a>
+          <button id="dres-refresh" type="button" hidden>Làm mới đề</button>
+          <button id="dres-disconnect" type="button" hidden>Đổi tài khoản</button>
         </div>
+        <p id="dres-task-meta" class="search-note"></p>
+        <div id="dres-task-content" class="dres-task-content" aria-label="Nội dung đề từ DRES">
+          <div id="dres-task-texts" aria-live="polite"></div>
+          <div id="dres-task-media"></div>
+        </div>
+        <p id="dres-task-message" class="search-note" role="status">Đang đọc đề từ DRES…</p>
+        <div class="dres-manual-query">
+          <label for="dres-manual-toggle">
+            <input id="dres-manual-toggle" type="checkbox" aria-controls="manual-query-panel" aria-expanded="false">
+            <span>Tự nhập query thay đề hiện tại</span>
+          </label>
+        </div>
+        <form id="dres-qa-form" class="dres-qa-form" hidden>
+          <label for="dres-qa-answer">Đáp án chữ cho câu QA hiện tại</label>
+          <textarea id="dres-qa-answer" rows="2" maxlength="4000" required placeholder="Nhập đáp án đúng định dạng yêu cầu của đề…" aria-describedby="dres-qa-note" disabled></textarea>
+          <p id="dres-qa-note" class="search-note">Xem trước JSON trước khi gửi.</p>
+          <div class="dres-actions"><button id="dres-qa-preview" type="submit">Xem trước đáp án QA</button></div>
+        </form>
+      </section>
+
+      <section id="dres-login-panel" class="dres-panel" aria-labelledby="dres-title">
+        <div class="dres-heading">
+          <div><p class="eyebrow">DRES / Submission</p><h2 id="dres-title">Kết nối &amp; nộp bài</h2></div>
+        </div>
+        <form id="dres-connect-form" class="dres-connect-form">
+          <label>Run ID<input id="dres-run-id" type="text" required maxlength="64" autocomplete="off" placeholder="UUID của evaluation run"></label>
+          <label>Cách đăng nhập<select id="dres-auth-mode"><option value="session">Session ID</option><option value="login">Username / password</option></select></label>
+          <label id="dres-session-field">Session ID<input id="dres-session" type="password" autocomplete="off" required aria-describedby="dres-privacy"></label>
+          <div id="dres-login-fields" class="dres-login-fields" hidden>
+            <label>Username<input id="dres-username" type="text" autocomplete="username" disabled></label>
+            <label>Password<input id="dres-password" type="password" autocomplete="current-password" disabled></label>
+          </div>
+          <div class="dres-actions">
+            <button id="dres-connect" type="submit">Kết nối DRES</button>
+          </div>
+        </form>
+        <p id="dres-privacy" class="search-note">Phiên chỉ giữ trong RAM của server, hết hạn sau 8 giờ.</p>
+      </section>
+
+      <div class="history-block">
+        <p class="eyebrow">Lịch sử nộp</p>
+        <ul id="dres-history" class="dres-history" aria-label="Kết quả nộp trong trang hiện tại"></ul>
       </div>
+    </aside>
+  </div>
 
-      <details class="query-details">
-        <summary>Query variants hệ thống đã dùng</summary>
-        <ol id="query-variants"></ol>
-      </details>
-
-      <div id="results-grid" class="results-grid"></div>
-    </section>
-  </main>
+  <div id="hover-zoom" class="hover-zoom" hidden aria-hidden="true"><img id="hover-zoom-image" alt=""></div>
 
   <dialog id="preview-dialog" class="preview-dialog">
     <button id="close-preview" class="close-preview" type="button" aria-label="Đóng ảnh">×</button>
@@ -90,9 +181,31 @@
     </div>
   </dialog>
 
-  <footer>
-    <span>KIS RETRIEVAL SYSTEM</span>
-    <span>VISUAL · BM25 · SEMANTIC · VLM</span>
-  </footer>
+  <dialog id="dres-confirm-dialog" class="dres-confirm-dialog" aria-labelledby="dres-confirm-title" aria-describedby="dres-confirm-note">
+    <h2 id="dres-confirm-title">Xác nhận nộp DRES</h2>
+    <p id="dres-selection"></p>
+    <p id="dres-confirm-note">Nộp bài thật, có thể tính lượt/điểm.</p>
+    <div id="dres-frame-adjust" class="dres-frame-adjust" hidden>
+      <img id="dres-frame-image" alt="">
+      <div class="dres-frame-controls">
+        <strong id="dres-frame-label"></strong>
+        <div class="dres-actions">
+          <button id="dres-kf-prev" type="button">◀ Keyframe trước</button>
+          <button id="dres-kf-next" type="button">Keyframe sau ▶</button>
+        </div>
+        <div class="dres-actions">
+          <button id="dres-frame-minus" type="button">−1 frame</button>
+          <button id="dres-frame-plus" type="button">+1 frame</button>
+          <button id="dres-frame-reset" type="button">Về frame đã chọn</button>
+        </div>
+      </div>
+    </div>
+    <pre id="dres-payload"></pre>
+    <p id="dres-submit-status" role="status" aria-live="polite"></p>
+    <div class="dres-actions">
+      <button id="dres-confirm-submit" type="button">Xác nhận gửi bài thật</button>
+      <button id="dres-cancel-submit" type="button">Hủy</button>
+    </div>
+  </dialog>
 </body>
 </html>

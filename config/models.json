@@ -1,13 +1,16 @@
 {
   "schema_version": 1,
   "visual_embedding": {
-    "model": "ViT-B-16-SigLIP",
-    "pretrained": "webli",
-    "hf_repo": "timm/ViT-B-16-SigLIP",
-    "hf_revision": "41f575766f40e752fdd1383e9565b7f02388c1c4",
+    "model": "ViT-B-16-SigLIP2-384",
+    "pretrained": "hf-hub",
+    "hf_repo": "timm/ViT-B-16-SigLIP2-384",
+    "hf_revision": "369333c629e1ab4eb90806c8e13df3054c3c1e63",
+    "loader": "local-dir",
+    "features_dir": "siglip2-features",
     "dimension": 768,
     "normalized": true,
-    "metric": "IP"
+    "metric": "IP",
+    "milvus_collection": "siglip2_keyframes"
   },
   "caption_embedding": {
     "model": "sentence-transformers/all-MiniLM-L6-v2",
@@ -34,7 +37,12 @@
     "max_patches": 2
   },
   "query_structuring": {
-    "provider": "gemini",
-    "model": "gemini-3.1-flash-lite"
+    "provider": "groq",
+    "model": "openai/gpt-oss-20b",
+    "base_url": "https://api.groq.com/openai/v1",
+    "response_format": "json_schema",
+    "timeout_seconds": 60,
+    "temperature": 0,
+    "max_tokens": 4096
   }
 }

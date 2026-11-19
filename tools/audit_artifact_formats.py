@@ -9,7 +9,8 @@ from kis.caption_schema import file_sha256, validate_caption_manifest
 from kis.caption_schema import normalize_caption_record, validate_unique_caption_records
 from kis.config import CAPTION_CONFIG, VISUAL_CONFIG
 from kis.objects import validate_object_schema
-from kis.paths import KIS_ROOT, canonical_video_artifact_path, resolve_video_artifact, resolve_video_image_dir, resolve_video_object_dir, video_group
+from kis.paths import KIS_ROOT, resolve_video_artifact, resolve_video_image_dir, resolve_video_object_dir, video_group
+from tools.prepare_video_data import allows_frame_idx_aliases
 
 
 CAPTION_FIELDS = {"video_id", "frame_id", "keyframe_n", "image_path", "caption", "vqa_answers", "details", "retrieval_text"}
@@ -42,7 +43,13 @@ def audit_video_formats(project_root, video_id, allow_incomplete=False):
         reports.append({"video_id": video_id, "folder": folder, "status": status, "detail": detail})
 
     def mapping():
-        with resolve_video_artifact(root / "mapping", video_id, ".csv").open(encoding="utf-8", newline="") as file:
+        mapping_path = resolve_video_artifact(root / "mapping", video_id, ".csv")
+        state_path = resolve_video_artifact(root / 'preparation', video_id, '.json')
+        state = json.loads(state_path.read_text(encoding='utf-8')) if state_path.is_file() else {}
+        allow_aliases = allows_frame_idx_aliases(state)
+        if allow_aliases and file_sha256(mapping_path) != state['keyframes'].get('mapping_sha256'):
+            raise ValueError('Imported mapping checksum changed')
+        with mapping_path.open(encoding="utf-8", newline="") as file:
             reader = csv.DictReader(file)
             if reader.fieldnames != ["n", "pts_time", "fps", "frame_idx"]:
                 raise ValueError("CSV columns must be n,pts_time,fps,frame_idx in this order")
@@ -56,10 +63,14 @@ def audit_video_formats(project_root, video_id, allow_incomplete=False):
         if any(row["frame_idx"] < 0 or not np.isfinite(row["pts_time"]) or row["pts_time"] < 0
                or not np.isfinite(row["fps"]) or row["fps"] <= 0 for row in rows):
             raise ValueError("Mapping contains invalid frames, timestamps or FPS")
-        if any(current["frame_idx"] <= previous["frame_idx"] or current["pts_time"] < previous["pts_time"]
-               for previous, current in zip(rows, rows[1:])):
+        if any(current["frame_idx"] < previous["frame_idx"]
+               or (current['frame_idx'] == previous['frame_idx'] and not allow_aliases)
+               or current["pts_time"] < previous["pts_time"]
+                for previous, current in zip(rows, rows[1:])):
             raise ValueError("Mapping frames/timestamps must be ordered")
-        return f"{len(rows)} rows; n,pts_time,fps,frame_idx"
+        aliases = len(rows) - len({row['frame_idx'] for row in rows})
+        return (f"{len(rows)} rows; n,pts_time,fps,frame_idx"
+                + (f'; WARNING: {aliases} frame_idx aliases preserved; identity=(video_id,keyframe_n)' if aliases else ''))
 
     inspect("mapping", mapping)
     frame_mapping = {row["n"]: row["frame_idx"] for row in rows}
@@ -109,7 +120,7 @@ def audit_video_formats(project_root, video_id, allow_incomplete=False):
     inspect("objects", objects)
 
     def caption_generator():
-        path = canonical_video_artifact_path(root / "caption_generator", video_id, ".json")
+        path = resolve_video_artifact(root / "caption_generator", video_id, ".json")
         records = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(records, list):
             raise ValueError("Caption JSON must be an array")
@@ -163,7 +174,7 @@ def audit_video_formats(project_root, video_id, allow_incomplete=False):
     inspect("caption_generator", caption_generator)
 
     def caption_mapping():
-        path = canonical_video_artifact_path(root / "caption_mapping", video_id, ".json")
+        path = resolve_video_artifact(root / "caption_mapping", video_id, ".json")
         records = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(records, list) or len(records) != len(rows):
             raise IncompleteArtifact("Caption mapping count is incomplete")
@@ -179,7 +190,7 @@ def audit_video_formats(project_root, video_id, allow_incomplete=False):
     def index():
         import faiss
 
-        index_path = canonical_video_artifact_path(root / "index", video_id, ".index")
+        index_path = resolve_video_artifact(root / "index", video_id, ".index")
         if not index_path.is_file():
             raise FileNotFoundError(f"Waiting for {index_path.name}")
         vectors = faiss.read_index(str(index_path))
@@ -188,8 +199,8 @@ def audit_video_formats(project_root, video_id, allow_incomplete=False):
         if vectors.ntotal != len(rows) or len(captions) != len(rows):
             raise IncompleteArtifact("Caption index count is incomplete")
         validate_caption_manifest(
-            video_id, canonical_video_artifact_path(root / "caption_generator", video_id, ".json"),
-            canonical_video_artifact_path(root / "caption_mapping", video_id, ".json"),
+            video_id, resolve_video_artifact(root / "caption_generator", video_id, ".json"),
+            resolve_video_artifact(root / "caption_mapping", video_id, ".json"),
             index_path, index_path.with_suffix(".meta.json"), vectors, len(captions),
         )
         return f"IndexFlatIP ({vectors.ntotal},384); SHA-256/model manifest OK"

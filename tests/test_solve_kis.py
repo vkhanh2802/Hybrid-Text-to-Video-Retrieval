@@ -63,6 +63,26 @@ class FakeVlmReranker:
 
 
 class SolveKisIntegrationTest(unittest.TestCase):
+    def test_async_ocr_join_after_streams_and_same_ranking(self):
+        from kis.ocr import OCRConfig
+        diagnostics = {}
+        events = []
+        class Ready:
+            def result(self):
+                events.append('ocr_join')
+                return [], {'status': 'no_match', 'seconds': .01, 'queries': [], 'hits': 0}
+        original = FakeSemanticRetriever.search
+        def semantic(instance, *args, **kwargs):
+            events.append('semantic')
+            return original(instance, *args, **kwargs)
+        with patch.object(FakeSemanticRetriever, 'search', semantic):
+            result = self.run_pipeline(ocr_future=Ready(), diagnostics=diagnostics,
+                                       ocr_config=OCRConfig(mode='retrieve'))
+        self.assertLess(events.index('semantic'), events.index('ocr_join'))
+        self.assertEqual(diagnostics['ocr']['execution'], 'overlapped_with_frame_retrieval')
+        self.assertEqual([(r['video_id'], r['frame_id']) for r in result],
+                         [(r['video_id'], r['frame_id']) for r in self.run_pipeline()])
+
     def setUp(self):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
@@ -70,7 +90,7 @@ class SolveKisIntegrationTest(unittest.TestCase):
         for path in self.image_paths:
             path.write_bytes(b"image fixture")
 
-    def run_pipeline(self, vlm_reranker=None):
+    def run_pipeline(self, vlm_reranker=None, **kwargs):
         return solve_kis(
             structured_query={
                 "raw_query": "test query",
@@ -86,7 +106,34 @@ class SolveKisIntegrationTest(unittest.TestCase):
             retrieval_top_k=2,
             rerank_top_k=2,
             result_top_k=2,
+            **kwargs,
         )
+
+    def test_text_reranker_runs_before_vlm_and_survives_disabled_vlm(self):
+        from kis.text_reranker import TextRerankerConfig
+
+        diagnostics = {}
+        reranker = Mock(score_pairs=Mock(return_value=[-3, 2]))
+        results = self.run_pipeline(text_reranker_config=TextRerankerConfig(mode="rerank"),
+                                    text_reranker=reranker, diagnostics=diagnostics)
+        self.assertEqual([item["frame_id"] for item in results], [2, 1])
+        self.assertEqual(diagnostics["rerank_input"][0]["frame_id"], 2)
+        self.assertEqual(diagnostics["text_reranker"]["status"], "applied")
+        self.assertIn("text_reranker", diagnostics["stage_seconds"])
+        self.assertLess(results[0]["score"], results[1]["score"])
+        self.assertGreater(results[0]["final_score"], results[1]["final_score"])
+
+    def test_text_failure_keeps_original_pipeline_and_vlm_still_works(self):
+        from kis.text_reranker import TextRerankerConfig
+
+        config = TextRerankerConfig(mode="rerank")
+        failed = Mock(score_pairs=Mock(side_effect=RuntimeError("not cached")))
+        baseline = self.run_pipeline()
+        result = self.run_pipeline(text_reranker_config=config, text_reranker=failed)
+        self.assertEqual([(i["frame_id"], i["final_score"]) for i in result],
+                         [(i["frame_id"], i["final_score"]) for i in baseline])
+        with_vlm = self.run_pipeline(FakeVlmReranker(), text_reranker_config=config, text_reranker=failed)
+        self.assertEqual(with_vlm[0]["frame_id"], 2)
 
     def test_retrieval_ranking_without_vlm(self):
         results = self.run_pipeline()
@@ -116,6 +163,21 @@ class SolveKisIntegrationTest(unittest.TestCase):
         self.assertEqual(results[0]["vlm_status"], "missing_image")
         reranker.score.assert_not_called()
         self.assertEqual(video.read_bytes(), b"original video")
+
+    def test_one_hundred_candidates_score_only_first_twenty_without_backfill(self):
+        candidates = [{"video_id": "L01_V001", "frame_id": i, "score": 1 - i / 101} for i in range(100)]
+        reranker = Mock(score=Mock(return_value=8))
+        def resolve(candidate, lookup):
+            return None if candidate["frame_id"] == 0 else Path(f"{candidate['frame_id']}.jpg")
+        with patch("kis.solve_kis._resolve_candidate_image_path", side_effect=resolve):
+            results = rerank_candidates_with_vlm(candidates, "query", reranker, None, top_k=20)
+        self.assertEqual(len(results), 100)
+        self.assertEqual(reranker.score.call_count, 19)
+        self.assertEqual({int(call.args[0].stem) for call in reranker.score.call_args_list}, set(range(1, 20)))
+        by_frame = {item["frame_id"]: item for item in results}
+        self.assertEqual(by_frame[0]["vlm_status"], "missing_image")
+        self.assertTrue(all(by_frame[i]["vlm_status"] == "unscored" for i in range(20, 100)))
+        self.assertTrue(all(by_frame[i]["final_score"] == by_frame[i]["score"] for i in range(20, 100)))
 
 
 class NotebookTest(unittest.TestCase):

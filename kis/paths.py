@@ -6,7 +6,7 @@ import re
 
 KIS_ROOT = Path(__file__).resolve().parents[1]
 DATASET_ROOT = KIS_ROOT / "dataset"
-MAX_VIDEO_GROUP = 21
+MAX_VIDEO_GROUP = 24  # L22-L24 caption/index staged 2026-11-19
 CAPTION_DIR = DATASET_ROOT / "caption_generator"
 CAPTION_MAPPING_DIR = DATASET_ROOT / "caption_mapping"
 INDEX_DIR = DATASET_ROOT / "index"
@@ -33,7 +33,10 @@ def configured_data_dir(environ=None, settings_path=None):
 DATA_DIR = configured_data_dir()
 OBJECTS_DIR = DATASET_ROOT / "objects"
 MAPPING_DIR = DATASET_ROOT / "mapping"
-CLIP_FEATURES_DIR = DATASET_ROOT / "clip-features-32"
+# kis.config imports this module, so read the visual features dir from the manifest directly.
+VISUAL_FEATURES_NAME = json.loads((KIS_ROOT / "config" / "models.json").read_text(encoding="utf-8"))[
+    "visual_embedding"].get("features_dir", "clip-features-32")
+CLIP_FEATURES_DIR = DATASET_ROOT / VISUAL_FEATURES_NAME
 
 VIDEO_ID_PATTERN = re.compile(r"^L\d+_V\d+$")
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
@@ -61,7 +64,7 @@ def canonical_video_artifact_path(
     video_id: str,
     suffix: str,
 ) -> Path:
-    return Path(root) / video_group(video_id) / f"{video_id}{suffix}"
+    return canonical_video_directory(root, video_id) / f"{video_id}{suffix}"
 
 
 def canonical_video_directory(root: Path, video_id: str) -> Path:
@@ -72,8 +75,13 @@ def resolve_video_artifact(
     root: Path,
     video_id: str,
     suffix: str,
+    video_groups=None,
 ) -> Path:
     root = Path(root)
+    if video_groups is None and "KIS_VIDEO_GROUPS" in os.environ:
+        video_groups = tuple(g.strip() for g in os.environ["KIS_VIDEO_GROUPS"].split(",") if g.strip())
+    if video_groups is not None and video_group(video_id) not in video_groups:
+        raise ValueError(f"Artifact outside selected groups: {video_id}")
     canonical = canonical_video_artifact_path(root, video_id, suffix)
     candidates = []
 
@@ -83,7 +91,8 @@ def resolve_video_artifact(
 
     candidates.extend(
         path
-        for path in root.rglob(f"{video_id}{suffix}")
+        for path in ((root / video_group(video_id)).rglob(f"{video_id}{suffix}")
+                     if video_groups is not None else root.rglob(f"{video_id}{suffix}"))
         if path.is_file()
     )
     unique_candidates = sorted({path.resolve() for path in candidates})
@@ -117,11 +126,13 @@ def resolve_video_image_dir(video_id: str, image_root=DATA_DIR) -> Path:
     if unique_candidates:
         return unique_candidates[0]
 
-    return image_root / video_id
+    return canonical_video_directory(image_root, video_id)
 
 
-def discover_video_image_dirs(image_root=DATA_DIR):
+def discover_video_image_dirs(image_root=DATA_DIR, video_groups=None):
     image_root = Path(image_root)
+    if video_groups is None and "KIS_VIDEO_GROUPS" in os.environ:
+        video_groups = tuple(g.strip() for g in os.environ["KIS_VIDEO_GROUPS"].split(",") if g.strip())
     discovered = {}
 
     def register(video_id, image_dir):
@@ -139,11 +150,13 @@ def discover_video_image_dirs(image_root=DATA_DIR):
         return discovered
 
     for child in sorted(image_root.iterdir()):
-        if child.is_dir() and VIDEO_ID_PATTERN.fullmatch(child.name):
+        if (VIDEO_ID_PATTERN.fullmatch(child.name)
+                and (video_groups is None or video_group(child.name) in video_groups) and child.is_dir()):
             register(child.name, child)
 
     for child in sorted(image_root.iterdir()):
-        if child.is_dir() and re.fullmatch(r"L\d+", child.name):
+        if (re.fullmatch(r"L\d+", child.name)
+                and (video_groups is None or child.name in video_groups) and child.is_dir()):
             for subdir in sorted(child.iterdir()):
                 if (subdir.is_dir() and VIDEO_ID_PATTERN.fullmatch(subdir.name)
                         and video_group(subdir.name) == child.name):

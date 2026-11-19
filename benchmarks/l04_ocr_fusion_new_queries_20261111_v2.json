@@ -1,0 +1,2082 @@
+{
+  "authoring": {
+    "inspection_reads": 90,
+    "language_policy": "Natural English scene descriptions. Preserve exact readable Vietnamese/English strings for literal/mixed. Mark English or English+Vietnamese per query. Visual transcription by this assistant, no independent human verification; small compressed broadcast text may be ambiguous. Source image grounding does not prove upstream OCR byte provenance.",
+    "qrels_incomplete": true,
+    "selection_rule": {
+      "assigned_kinds": "literal, scene, mixed repeated in selected-video then selected-image order, before viewing",
+      "dev_reference": "benchmarks/l04_ocr_exploratory_20261111.json; eight frozen single-positive queries, never edited; no tuning",
+      "eligible_videos": [
+        "L04_V003",
+        "L04_V005",
+        "L04_V007",
+        "L04_V009",
+        "L04_V011",
+        "L04_V013",
+        "L04_V015",
+        "L04_V017",
+        "L04_V019",
+        "L04_V021",
+        "L04_V023",
+        "L04_V025",
+        "L04_V027",
+        "L04_V028"
+      ],
+      "excluded_videos": [
+        "L04_V001",
+        "L04_V002",
+        "L04_V004",
+        "L04_V006",
+        "L04_V008",
+        "L04_V010",
+        "L04_V012",
+        "L04_V014",
+        "L04_V016",
+        "L04_V018",
+        "L04_V020",
+        "L04_V022",
+        "L04_V024",
+        "L04_V026",
+        "L04_V029",
+        "L04_V030"
+      ],
+      "fallback": "If reliable exact on-screen text cannot be read for a literal/mixed assignment, use scene on the SAME image and record reason; no substitution",
+      "frozen_plan": [
+        {
+          "assigned_kind": "literal",
+          "id": "t01",
+          "image_count": 218,
+          "keyframe_n": 73,
+          "neighbors": [
+            "dataset/data/L04/L04_V003/071.jpg",
+            "dataset/data/L04/L04_V003/072.jpg",
+            "dataset/data/L04/L04_V003/073.jpg",
+            "dataset/data/L04/L04_V003/074.jpg",
+            "dataset/data/L04/L04_V003/075.jpg"
+          ],
+          "position": 72,
+          "video_id": "L04_V003"
+        },
+        {
+          "assigned_kind": "scene",
+          "id": "t02",
+          "image_count": 218,
+          "keyframe_n": 145,
+          "neighbors": [
+            "dataset/data/L04/L04_V003/143.jpg",
+            "dataset/data/L04/L04_V003/144.jpg",
+            "dataset/data/L04/L04_V003/145.jpg",
+            "dataset/data/L04/L04_V003/146.jpg",
+            "dataset/data/L04/L04_V003/147.jpg"
+          ],
+          "position": 144,
+          "video_id": "L04_V003"
+        },
+        {
+          "assigned_kind": "mixed",
+          "id": "t03",
+          "image_count": 272,
+          "keyframe_n": 91,
+          "neighbors": [
+            "dataset/data/L04/L04_V005/089.jpg",
+            "dataset/data/L04/L04_V005/090.jpg",
+            "dataset/data/L04/L04_V005/091.jpg",
+            "dataset/data/L04/L04_V005/092.jpg",
+            "dataset/data/L04/L04_V005/093.jpg"
+          ],
+          "position": 90,
+          "video_id": "L04_V005"
+        },
+        {
+          "assigned_kind": "literal",
+          "id": "t04",
+          "image_count": 272,
+          "keyframe_n": 181,
+          "neighbors": [
+            "dataset/data/L04/L04_V005/179.jpg",
+            "dataset/data/L04/L04_V005/180.jpg",
+            "dataset/data/L04/L04_V005/181.jpg",
+            "dataset/data/L04/L04_V005/182.jpg",
+            "dataset/data/L04/L04_V005/183.jpg"
+          ],
+          "position": 180,
+          "video_id": "L04_V005"
+        },
+        {
+          "assigned_kind": "scene",
+          "id": "t05",
+          "image_count": 238,
+          "keyframe_n": 80,
+          "neighbors": [
+            "dataset/data/L04/L04_V009/078.jpg",
+            "dataset/data/L04/L04_V009/079.jpg",
+            "dataset/data/L04/L04_V009/080.jpg",
+            "dataset/data/L04/L04_V009/081.jpg",
+            "dataset/data/L04/L04_V009/082.jpg"
+          ],
+          "position": 79,
+          "video_id": "L04_V009"
+        },
+        {
+          "assigned_kind": "mixed",
+          "id": "t06",
+          "image_count": 238,
+          "keyframe_n": 159,
+          "neighbors": [
+            "dataset/data/L04/L04_V009/157.jpg",
+            "dataset/data/L04/L04_V009/158.jpg",
+            "dataset/data/L04/L04_V009/159.jpg",
+            "dataset/data/L04/L04_V009/160.jpg",
+            "dataset/data/L04/L04_V009/161.jpg"
+          ],
+          "position": 158,
+          "video_id": "L04_V009"
+        },
+        {
+          "assigned_kind": "literal",
+          "id": "t07",
+          "image_count": 232,
+          "keyframe_n": 78,
+          "neighbors": [
+            "dataset/data/L04/L04_V011/076.jpg",
+            "dataset/data/L04/L04_V011/077.jpg",
+            "dataset/data/L04/L04_V011/078.jpg",
+            "dataset/data/L04/L04_V011/079.jpg",
+            "dataset/data/L04/L04_V011/080.jpg"
+          ],
+          "position": 77,
+          "video_id": "L04_V011"
+        },
+        {
+          "assigned_kind": "scene",
+          "id": "t08",
+          "image_count": 232,
+          "keyframe_n": 155,
+          "neighbors": [
+            "dataset/data/L04/L04_V011/153.jpg",
+            "dataset/data/L04/L04_V011/154.jpg",
+            "dataset/data/L04/L04_V011/155.jpg",
+            "dataset/data/L04/L04_V011/156.jpg",
+            "dataset/data/L04/L04_V011/157.jpg"
+          ],
+          "position": 154,
+          "video_id": "L04_V011"
+        },
+        {
+          "assigned_kind": "mixed",
+          "id": "t09",
+          "image_count": 240,
+          "keyframe_n": 80,
+          "neighbors": [
+            "dataset/data/L04/L04_V015/078.jpg",
+            "dataset/data/L04/L04_V015/079.jpg",
+            "dataset/data/L04/L04_V015/080.jpg",
+            "dataset/data/L04/L04_V015/081.jpg",
+            "dataset/data/L04/L04_V015/082.jpg"
+          ],
+          "position": 79,
+          "video_id": "L04_V015"
+        },
+        {
+          "assigned_kind": "literal",
+          "id": "t10",
+          "image_count": 240,
+          "keyframe_n": 160,
+          "neighbors": [
+            "dataset/data/L04/L04_V015/158.jpg",
+            "dataset/data/L04/L04_V015/159.jpg",
+            "dataset/data/L04/L04_V015/160.jpg",
+            "dataset/data/L04/L04_V015/161.jpg",
+            "dataset/data/L04/L04_V015/162.jpg"
+          ],
+          "position": 159,
+          "video_id": "L04_V015"
+        },
+        {
+          "assigned_kind": "scene",
+          "id": "t11",
+          "image_count": 266,
+          "keyframe_n": 89,
+          "neighbors": [
+            "dataset/data/L04/L04_V019/087.jpg",
+            "dataset/data/L04/L04_V019/088.jpg",
+            "dataset/data/L04/L04_V019/089.jpg",
+            "dataset/data/L04/L04_V019/090.jpg",
+            "dataset/data/L04/L04_V019/091.jpg"
+          ],
+          "position": 88,
+          "video_id": "L04_V019"
+        },
+        {
+          "assigned_kind": "mixed",
+          "id": "t12",
+          "image_count": 266,
+          "keyframe_n": 177,
+          "neighbors": [
+            "dataset/data/L04/L04_V019/175.jpg",
+            "dataset/data/L04/L04_V019/176.jpg",
+            "dataset/data/L04/L04_V019/177.jpg",
+            "dataset/data/L04/L04_V019/178.jpg",
+            "dataset/data/L04/L04_V019/179.jpg"
+          ],
+          "position": 176,
+          "video_id": "L04_V019"
+        },
+        {
+          "assigned_kind": "literal",
+          "id": "t13",
+          "image_count": 214,
+          "keyframe_n": 72,
+          "neighbors": [
+            "dataset/data/L04/L04_V021/070.jpg",
+            "dataset/data/L04/L04_V021/071.jpg",
+            "dataset/data/L04/L04_V021/072.jpg",
+            "dataset/data/L04/L04_V021/073.jpg",
+            "dataset/data/L04/L04_V021/074.jpg"
+          ],
+          "position": 71,
+          "video_id": "L04_V021"
+        },
+        {
+          "assigned_kind": "scene",
+          "id": "t14",
+          "image_count": 214,
+          "keyframe_n": 143,
+          "neighbors": [
+            "dataset/data/L04/L04_V021/141.jpg",
+            "dataset/data/L04/L04_V021/142.jpg",
+            "dataset/data/L04/L04_V021/143.jpg",
+            "dataset/data/L04/L04_V021/144.jpg",
+            "dataset/data/L04/L04_V021/145.jpg"
+          ],
+          "position": 142,
+          "video_id": "L04_V021"
+        },
+        {
+          "assigned_kind": "mixed",
+          "id": "t15",
+          "image_count": 262,
+          "keyframe_n": 88,
+          "neighbors": [
+            "dataset/data/L04/L04_V025/086.jpg",
+            "dataset/data/L04/L04_V025/087.jpg",
+            "dataset/data/L04/L04_V025/088.jpg",
+            "dataset/data/L04/L04_V025/089.jpg",
+            "dataset/data/L04/L04_V025/090.jpg"
+          ],
+          "position": 87,
+          "video_id": "L04_V025"
+        },
+        {
+          "assigned_kind": "literal",
+          "id": "t16",
+          "image_count": 262,
+          "keyframe_n": 175,
+          "neighbors": [
+            "dataset/data/L04/L04_V025/173.jpg",
+            "dataset/data/L04/L04_V025/174.jpg",
+            "dataset/data/L04/L04_V025/175.jpg",
+            "dataset/data/L04/L04_V025/176.jpg",
+            "dataset/data/L04/L04_V025/177.jpg"
+          ],
+          "position": 174,
+          "video_id": "L04_V025"
+        },
+        {
+          "assigned_kind": "scene",
+          "id": "t17",
+          "image_count": 261,
+          "keyframe_n": 87,
+          "neighbors": [
+            "dataset/data/L04/L04_V028/085.jpg",
+            "dataset/data/L04/L04_V028/086.jpg",
+            "dataset/data/L04/L04_V028/087.jpg",
+            "dataset/data/L04/L04_V028/088.jpg",
+            "dataset/data/L04/L04_V028/089.jpg"
+          ],
+          "position": 86,
+          "video_id": "L04_V028"
+        },
+        {
+          "assigned_kind": "mixed",
+          "id": "t18",
+          "image_count": 261,
+          "keyframe_n": 174,
+          "neighbors": [
+            "dataset/data/L04/L04_V028/172.jpg",
+            "dataset/data/L04/L04_V028/173.jpg",
+            "dataset/data/L04/L04_V028/174.jpg",
+            "dataset/data/L04/L04_V028/175.jpg",
+            "dataset/data/L04/L04_V028/176.jpg"
+          ],
+          "position": 173,
+          "video_id": "L04_V028"
+        }
+      ],
+      "image_order": "canonical numeric .jpg stems sorted numerically, distinct identities",
+      "no_reuse": "Exclude every prior target video, prior judged numeric identity and exact query string. Neighborhoods must not overlap; fail before authoring, never content-reselect.",
+      "prior_packets": [
+        {
+          "path": "benchmarks/l04_ocr_exploratory_20261111.json",
+          "sha256": "f60b18f82b5b379414c503f08aae8cec7df325df59f7f0f00d7d8ccaa1ead8db"
+        },
+        {
+          "path": "benchmarks/l04_ocr_fusion_20261111_v1.json",
+          "sha256": "fb5c31f20b5ff25756551f3e8de208c8bc269a953320f596f33a565218d7a5e4"
+        }
+      ],
+      "target_indices_zero_based": "floor((image_count-1)/3), floor(2*(image_count-1)/3); require both in [2,image_count-3] and distinct",
+      "test_queries": 18,
+      "test_videos": 9,
+      "video_indices_zero_based": "floor(i*(eligible_video_count-1)/8), i=0..8",
+      "video_order": "sorted canonical L04_V[0-9]{3} directory names under dataset/data/L04 only"
+    },
+    "sequence": [
+      "Preservation hashes captured before edits.",
+      "Protocol, identical scoring and 18 targets / 90 disjoint window identities frozen before image viewing.",
+      "All 90 original images opened directly via functions.read, no caption/OCR payload or ranks viewed.",
+      "Explicit whole-query judgments authored from images; t10 literal-to-scene fallback on same image.",
+      "Packet frozen and SHA printed before corpus loading, ranking or metrics; no subsequent query/label/weight tuning."
+    ],
+    "source_grounding": "Assistant-authored visual transcriptions and relevance labels, not independently human-verified; uninspected frames UNJUDGED. Ticker/scene conjunctions do not assert shared event truth."
+  },
+  "dev_reference": {
+    "path": "benchmarks/l04_ocr_exploratory_20261111.json",
+    "sha256": "f60b18f82b5b379414c503f08aae8cec7df325df59f7f0f00d7d8ccaa1ead8db"
+  },
+  "group": "L04",
+  "protocol_path": "benchmarks/l04_ocr_fusion_new_queries_20261111_v2.protocol.json",
+  "protocol_sha256": "4c3f6f27dc0cb1b5b3471ff73380d670bfbec9f86758bca9a39efcdde53d4a62",
+  "queries": [
+    {
+      "assigned_kind": "literal",
+      "fallback": null,
+      "frame_id": 8755,
+      "id": "t01",
+      "image_count": 218,
+      "image_sha256": "de0f7114036d532126bea3e9627c78b821bf1a75090316f757b90673bd1ea4d1",
+      "judgments": [
+        {
+          "frame_id": 8534,
+          "image_list_offset": -2,
+          "image_sha256": "80f4c99f4da1af881a13c6612c010549f407aea429df353cd8290c195a61c245",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 71,
+          "label": 1,
+          "rationale": "The full school name is readable above the interviewee.",
+          "source_image": "dataset/data/L04/L04_V003/071.jpg",
+          "target": {
+            "keyframe_n": 73,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 8665,
+          "image_list_offset": -1,
+          "image_sha256": "9bb75617476be739fb4a59bf78899b309e40898217f6c7e863ed2d0defc5041f",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 72,
+          "label": 1,
+          "rationale": "The same full school name is readable above the man with glasses.",
+          "source_image": "dataset/data/L04/L04_V003/072.jpg",
+          "target": {
+            "keyframe_n": 73,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 8755,
+          "image_list_offset": 0,
+          "image_sha256": "de0f7114036d532126bea3e9627c78b821bf1a75090316f757b90673bd1ea4d1",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 73,
+          "label": 1,
+          "rationale": "The complete quoted school header is readable above the interviewee.",
+          "source_image": "dataset/data/L04/L04_V003/073.jpg",
+          "target": {
+            "keyframe_n": 73,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 8883,
+          "image_list_offset": 1,
+          "image_sha256": "e7600b77064756cb9a56ac187292b7c24761ea8be70af0a8de5b6d59d09a294a",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 74,
+          "label": 0,
+          "rationale": "Restaurant diners and menu; the quoted school header is absent.",
+          "source_image": "dataset/data/L04/L04_V003/074.jpg",
+          "target": {
+            "keyframe_n": 73,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 8989,
+          "image_list_offset": 2,
+          "image_sha256": "1cd82bda52bd339629c50b5d0e8fcd601f612377f1582d31cf023b87c19878ce",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 75,
+          "label": 0,
+          "rationale": "Close view of diners; no quoted school header.",
+          "source_image": "dataset/data/L04/L04_V003/075.jpg",
+          "target": {
+            "keyframe_n": 73,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        }
+      ],
+      "kind": "literal",
+      "language": "English+Vietnamese",
+      "mapping_sha256": "ea5efab553104086c039d989359661b3f46165857e5cd5a10a507ae2e6120383",
+      "source_image": "dataset/data/L04/L04_V003/073.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 73,
+        "video_id": "L04_V003"
+      },
+      "target_position_zero_based": 72,
+      "text": "Find the on-screen words \"TRƯỜNG CAO ĐẲNG KINH TẾ ĐỐI NGOẠI\"."
+    },
+    {
+      "assigned_kind": "scene",
+      "fallback": null,
+      "frame_id": 17450,
+      "id": "t02",
+      "image_count": 218,
+      "image_sha256": "e02dc131f15e2cf1937b30c7a99e8a7af37827d65d64ca0215b3af4a792a60f9",
+      "judgments": [
+        {
+          "frame_id": 17167,
+          "image_list_offset": -2,
+          "image_sha256": "f530e4838b15f1c3398732188d04fe0bbade549e3bac2c3a8b0905907b49fe83",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 143,
+          "label": 0,
+          "rationale": "An ornate necklace on a white bust, not six watches.",
+          "source_image": "dataset/data/L04/L04_V003/143.jpg",
+          "target": {
+            "keyframe_n": 145,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 17315,
+          "image_list_offset": -1,
+          "image_sha256": "4b70e29a9e25c046e19e378fe27581c9fdfa8c002dddf460dbda5d0facc8ac17",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 144,
+          "label": 0,
+          "rationale": "Necklace and green earrings, not a group of watches.",
+          "source_image": "dataset/data/L04/L04_V003/144.jpg",
+          "target": {
+            "keyframe_n": 145,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 17450,
+          "image_list_offset": 0,
+          "image_sha256": "e02dc131f15e2cf1937b30c7a99e8a7af37827d65d64ca0215b3af4a792a60f9",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 145,
+          "label": 1,
+          "rationale": "Six wristwatches are upright on individual black cubes on the gray display surface.",
+          "source_image": "dataset/data/L04/L04_V003/145.jpg",
+          "target": {
+            "keyframe_n": 145,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 17609,
+          "image_list_offset": 1,
+          "image_sha256": "dfcb2a27a492d888b16fe059700ff8a05ba02eb09bd9851e36b140913683cfb5",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 146,
+          "label": 0,
+          "rationale": "Red broadcast transition graphic; no watch display.",
+          "source_image": "dataset/data/L04/L04_V003/146.jpg",
+          "target": {
+            "keyframe_n": 145,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        },
+        {
+          "frame_id": 17704,
+          "image_list_offset": 2,
+          "image_sha256": "f542fb791b6c205098dfd47ec162081920f5eb13dd29f3f8ca8bef124ca6a412",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 147,
+          "label": 0,
+          "rationale": "Canal-wall video preview, not wristwatches.",
+          "source_image": "dataset/data/L04/L04_V003/147.jpg",
+          "target": {
+            "keyframe_n": 145,
+            "video_id": "L04_V003"
+          },
+          "video_id": "L04_V003"
+        }
+      ],
+      "kind": "scene",
+      "language": "English",
+      "mapping_sha256": "ea5efab553104086c039d989359661b3f46165857e5cd5a10a507ae2e6120383",
+      "source_image": "dataset/data/L04/L04_V003/145.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 145,
+        "video_id": "L04_V003"
+      },
+      "target_position_zero_based": 144,
+      "text": "Six wristwatches displayed upright on separate black cube stands on a gray tabletop."
+    },
+    {
+      "assigned_kind": "mixed",
+      "fallback": null,
+      "frame_id": 10663,
+      "id": "t03",
+      "image_count": 272,
+      "image_sha256": "07e709bd3ccf624595304e7a7616a0be4da0262eeb9c8de131167ebcb7d608b2",
+      "judgments": [
+        {
+          "frame_id": 10466,
+          "image_list_offset": -2,
+          "image_sha256": "14bc5e1a3ade0cf76acb9c6cdd2f505e106c3ff5ac01cedc375b9d1a736bac79",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 89,
+          "label": 0,
+          "rationale": "Two women beside the bed, but the required episode overlay is absent.",
+          "source_image": "dataset/data/L04/L04_V005/089.jpg",
+          "target": {
+            "keyframe_n": 91,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 10568,
+          "image_list_offset": -1,
+          "image_sha256": "fa581363ab7b6546d42d3858f53f1c5e34cbfdc0a1a9d5a7c3589ea0fecf6d81",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 90,
+          "label": 0,
+          "rationale": "Episode text is visible, but a close-up of one woman does not show two women beside the bed.",
+          "source_image": "dataset/data/L04/L04_V005/090.jpg",
+          "target": {
+            "keyframe_n": 91,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 10663,
+          "image_list_offset": 0,
+          "image_sha256": "07e709bd3ccf624595304e7a7616a0be4da0262eeb9c8de131167ebcb7d608b2",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 91,
+          "label": 1,
+          "rationale": "Two women face each other beside the bed with the exact episode overlay readable.",
+          "source_image": "dataset/data/L04/L04_V005/091.jpg",
+          "target": {
+            "keyframe_n": 91,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 10747,
+          "image_list_offset": 1,
+          "image_sha256": "790394dc6ad1ef759a5431b70c83e7d1b985e20e8b83ee11ffff400f30b4580b",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 92,
+          "label": 0,
+          "rationale": "LEGO exhibition booth; neither bedroom scene nor episode text.",
+          "source_image": "dataset/data/L04/L04_V005/092.jpg",
+          "target": {
+            "keyframe_n": 91,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 10829,
+          "image_list_offset": 2,
+          "image_sha256": "d96c5d3b568548c2e96d4be0de8b3f8606681342d19db117aa814494be10dd21",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 93,
+          "label": 0,
+          "rationale": "LEGO model and exhibition preview; no women beside a bed or episode overlay.",
+          "source_image": "dataset/data/L04/L04_V005/093.jpg",
+          "target": {
+            "keyframe_n": 91,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        }
+      ],
+      "kind": "mixed",
+      "language": "English+Vietnamese",
+      "mapping_sha256": "6617a5001ec87988356b6b2838eccb446e8c13811e3c199e581458aa7285bf88",
+      "source_image": "dataset/data/L04/L04_V005/091.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 91,
+        "video_id": "L04_V005"
+      },
+      "target_position_zero_based": 90,
+      "text": "Two women facing each other beside a wooden bed, with the overlay \"TẬP 13\"."
+    },
+    {
+      "assigned_kind": "literal",
+      "fallback": null,
+      "frame_id": 21926,
+      "id": "t04",
+      "image_count": 272,
+      "image_sha256": "58ebc8d78de1832c275fd78b39982be0e02e3c04b36f48b3b771bda8a02ebcc3",
+      "judgments": [
+        {
+          "frame_id": 21671,
+          "image_list_offset": -2,
+          "image_sha256": "84eff60d02cb3b2dc566f5bcde04b133e6adf9c62809150fcaa1def530272b67",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 179,
+          "label": 0,
+          "rationale": "Officer and woman; ticker does not show the quoted Egypt phrase.",
+          "source_image": "dataset/data/L04/L04_V005/179.jpg",
+          "target": {
+            "keyframe_n": 181,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 21818,
+          "image_list_offset": -1,
+          "image_sha256": "7119afd32308d213ea94b78dd3ba4851e172ec46c739cbc2c7f91abb9b4de2d8",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 180,
+          "label": 0,
+          "rationale": "Hands close-up with a Washington Post ticker, not the quoted phrase.",
+          "source_image": "dataset/data/L04/L04_V005/180.jpg",
+          "target": {
+            "keyframe_n": 181,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 21926,
+          "image_list_offset": 0,
+          "image_sha256": "58ebc8d78de1832c275fd78b39982be0e02e3c04b36f48b3b771bda8a02ebcc3",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 181,
+          "label": 1,
+          "rationale": "The quoted phrase is readable in the right-hand ticker.",
+          "source_image": "dataset/data/L04/L04_V005/181.jpg",
+          "target": {
+            "keyframe_n": 181,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 22054,
+          "image_list_offset": 1,
+          "image_sha256": "91a7f3c2399f2e61dd19bdba53cb631cc4fbde97151e1d161964d776c9ad5849",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 182,
+          "label": 1,
+          "rationale": "The full quoted phrase is readable at the start of the ticker.",
+          "source_image": "dataset/data/L04/L04_V005/182.jpg",
+          "target": {
+            "keyframe_n": 181,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        },
+        {
+          "frame_id": 22207,
+          "image_list_offset": 2,
+          "image_sha256": "c6a68af8f0c47ec17ce8d68f69b27e6bc8c6cc4637d8243c6af126d2a8bf38a1",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 183,
+          "label": 0,
+          "rationale": "Ticker now concerns Singapore; the quoted Egypt phrase is absent.",
+          "source_image": "dataset/data/L04/L04_V005/183.jpg",
+          "target": {
+            "keyframe_n": 181,
+            "video_id": "L04_V005"
+          },
+          "video_id": "L04_V005"
+        }
+      ],
+      "kind": "literal",
+      "language": "English+Vietnamese",
+      "mapping_sha256": "6617a5001ec87988356b6b2838eccb446e8c13811e3c199e581458aa7285bf88",
+      "source_image": "dataset/data/L04/L04_V005/181.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 181,
+        "video_id": "L04_V005"
+      },
+      "target_position_zero_based": 180,
+      "text": "Find the on-screen phrase \"Ai Cập kêu tiếp tục viện trợ\"."
+    },
+    {
+      "assigned_kind": "scene",
+      "fallback": null,
+      "frame_id": 9763,
+      "id": "t05",
+      "image_count": 238,
+      "image_sha256": "d1ecc81941e6319c99340fffcdf90949d9ba544e9a678f533419368f52a174f6",
+      "judgments": [
+        {
+          "frame_id": 9569,
+          "image_list_offset": -2,
+          "image_sha256": "d07d7bf2d47ea5a7d038808de709c2dca669ea954f5559ec00299990add7e962",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 78,
+          "label": 0,
+          "rationale": "Woman interviewed near a window; not two white-coated people watching a television.",
+          "source_image": "dataset/data/L04/L04_V009/078.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 9653,
+          "image_list_offset": -1,
+          "image_sha256": "5228282c1d8f1d3248315d8603b4f79ed72435926f2401694fe2e95923fac51a",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 79,
+          "label": 0,
+          "rationale": "Bearded man interviewed from the front; no two-person rear view or television.",
+          "source_image": "dataset/data/L04/L04_V009/079.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 9763,
+          "image_list_offset": 0,
+          "image_sha256": "d1ecc81941e6319c99340fffcdf90949d9ba544e9a678f533419368f52a174f6",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 80,
+          "label": 1,
+          "rationale": "Two white-coated people with gray hoods are seen from behind facing a television against pink walls.",
+          "source_image": "dataset/data/L04/L04_V009/080.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 9907,
+          "image_list_offset": 1,
+          "image_sha256": "98b77d3e0d4895d4c6893b8bf9666c286a3aec35cecc57fcda366222bd4424c0",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 81,
+          "label": 0,
+          "rationale": "Single bearded interviewee from the front, not two people watching television.",
+          "source_image": "dataset/data/L04/L04_V009/081.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 9987,
+          "image_list_offset": 2,
+          "image_sha256": "4d462cff105d5ee03ba70ce8391783c20547d94ab172d134fe743b836bf20f7e",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 82,
+          "label": 0,
+          "rationale": "One person at a laptop in a wood-paneled room, not two people at a television.",
+          "source_image": "dataset/data/L04/L04_V009/082.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        }
+      ],
+      "kind": "scene",
+      "language": "English",
+      "mapping_sha256": "08f97391a117fdf36194705e035348d9b4d462eafa183fc3bc96e0422bfee447",
+      "source_image": "dataset/data/L04/L04_V009/080.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 80,
+        "video_id": "L04_V009"
+      },
+      "target_position_zero_based": 79,
+      "text": "Two people seen from behind wearing white coats over gray hoodies while watching a television in a pink-walled room."
+    },
+    {
+      "assigned_kind": "mixed",
+      "fallback": null,
+      "frame_id": 19374,
+      "id": "t06",
+      "image_count": 238,
+      "image_sha256": "15854dc6961dc900ad5bb6f11b3909bc14eb0a1825e685488defe9f4d6ef1378",
+      "judgments": [
+        {
+          "frame_id": 19090,
+          "image_list_offset": -2,
+          "image_sha256": "1b5506f9fd9a82b5f101b78962e7b478361b0ad197e71c56564e07f033f2149e",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 157,
+          "label": 0,
+          "rationale": "Officer facing a blue-clad man in a small room; neither presenters nor quoted ticker.",
+          "source_image": "dataset/data/L04/L04_V009/157.jpg",
+          "target": {
+            "keyframe_n": 159,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 19224,
+          "image_list_offset": -1,
+          "image_sha256": "05582b6540006372b2b7b1e55c4d6230c5d838417efc6e4dff9aab19151c7b31",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 158,
+          "label": 0,
+          "rationale": "Close-up of a blue-clad man with a theft headline; not studio presenters or quoted ticker.",
+          "source_image": "dataset/data/L04/L04_V009/158.jpg",
+          "target": {
+            "keyframe_n": 159,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 19374,
+          "image_list_offset": 0,
+          "image_sha256": "15854dc6961dc900ad5bb6f11b3909bc14eb0a1825e685488defe9f4d6ef1378",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 159,
+          "label": 1,
+          "rationale": "Both presenters stand behind the white desk and the full quoted ticker segment is readable.",
+          "source_image": "dataset/data/L04/L04_V009/159.jpg",
+          "target": {
+            "keyframe_n": 159,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 19521,
+          "image_list_offset": 1,
+          "image_sha256": "7281453bc19e21cf5276c3df3f0b888b84c035b66396ec0104fd3a94509544b9",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 160,
+          "label": 0,
+          "rationale": "Quoted ticker segment is visible, but the scene is dark vertical footage, not two studio presenters.",
+          "source_image": "dataset/data/L04/L04_V009/160.jpg",
+          "target": {
+            "keyframe_n": 159,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        },
+        {
+          "frame_id": 19680,
+          "image_list_offset": 2,
+          "image_sha256": "05f3e592ba32f10731a809172efa99a582c61f221785dfd0527d3e136bce5bcb",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 161,
+          "label": 0,
+          "rationale": "Dark footage with a crime headline; no two presenters or full quoted segment.",
+          "source_image": "dataset/data/L04/L04_V009/161.jpg",
+          "target": {
+            "keyframe_n": 159,
+            "video_id": "L04_V009"
+          },
+          "video_id": "L04_V009"
+        }
+      ],
+      "kind": "mixed",
+      "language": "English+Vietnamese",
+      "mapping_sha256": "08f97391a117fdf36194705e035348d9b4d462eafa183fc3bc96e0422bfee447",
+      "source_image": "dataset/data/L04/L04_V009/159.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 159,
+        "video_id": "L04_V009"
+      },
+      "target_position_zero_based": 158,
+      "text": "A male and female news presenter together behind a white studio desk, with the ticker \"khu chế biến hải sản Phú Hài\"."
+    },
+    {
+      "assigned_kind": "literal",
+      "fallback": null,
+      "frame_id": 9002,
+      "id": "t07",
+      "image_count": 232,
+      "image_sha256": "a835df8eb5b9835b25688e01291b6573a7e6f038b071295f929989eb1bb87623",
+      "judgments": [
+        {
+          "frame_id": 8754,
+          "image_list_offset": -2,
+          "image_sha256": "523ddc1c80921d4a679ad869b0908ddd5fbea81eb7963ee5d7af15514a5a8e21",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 76,
+          "label": 0,
+          "rationale": "Stage-wide shot has a different headline, not the quoted magician label.",
+          "source_image": "dataset/data/L04/L04_V011/076.jpg",
+          "target": {
+            "keyframe_n": 78,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 8842,
+          "image_list_offset": -1,
+          "image_sha256": "5f6ccc8aca337edb970900a45047090191ed02c2292e84accbbec498b5d2c378",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 77,
+          "label": 0,
+          "rationale": "Fire trick close-up; the quoted name label is absent.",
+          "source_image": "dataset/data/L04/L04_V011/077.jpg",
+          "target": {
+            "keyframe_n": 78,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 9002,
+          "image_list_offset": 0,
+          "image_sha256": "a835df8eb5b9835b25688e01291b6573a7e6f038b071295f929989eb1bb87623",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 78,
+          "label": 1,
+          "rationale": "The complete quoted magician label appears in the red lower third.",
+          "source_image": "dataset/data/L04/L04_V011/078.jpg",
+          "target": {
+            "keyframe_n": 78,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 9115,
+          "image_list_offset": 1,
+          "image_sha256": "d4b477ad72317b75f719e037a6fe22f435cd3b08f34fd00fec1b775086970bd4",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 79,
+          "label": 0,
+          "rationale": "Lower third names a different magician, K'TAY, not VIỆT DUY.",
+          "source_image": "dataset/data/L04/L04_V011/079.jpg",
+          "target": {
+            "keyframe_n": 78,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 9242,
+          "image_list_offset": 2,
+          "image_sha256": "c02b4a94a16b4528a17ef4b0ee4a671e02cca5dae23177775a39140c2021627f",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 80,
+          "label": 0,
+          "rationale": "Prop demonstration without the quoted name label.",
+          "source_image": "dataset/data/L04/L04_V011/080.jpg",
+          "target": {
+            "keyframe_n": 78,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        }
+      ],
+      "kind": "literal",
+      "language": "English+Vietnamese",
+      "mapping_sha256": "4d86318fd2f7b008f0475145813f5d660d228f9a7e9c1f28a9e013ac56203f16",
+      "source_image": "dataset/data/L04/L04_V011/078.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 78,
+        "video_id": "L04_V011"
+      },
+      "target_position_zero_based": 77,
+      "text": "Find the on-screen label \"Ảo thuật gia VIỆT DUY\"."
+    },
+    {
+      "assigned_kind": "scene",
+      "fallback": null,
+      "frame_id": 18198,
+      "id": "t08",
+      "image_count": 232,
+      "image_sha256": "7e89d0de174ea8cc03916903946934450963f63c00643f3e8b8d7d619e59a78d",
+      "judgments": [
+        {
+          "frame_id": 18014,
+          "image_list_offset": -2,
+          "image_sha256": "e012e1782eee184965109648bbc3e7d6b7a8dd0bb9533632735a8c936ccccd91",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 153,
+          "label": 0,
+          "rationale": "Large cobra sculpture with a man present; not a person-free tire heap close-up.",
+          "source_image": "dataset/data/L04/L04_V011/153.jpg",
+          "target": {
+            "keyframe_n": 155,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 18114,
+          "image_list_offset": -1,
+          "image_sha256": "c6c33b33d60538a167155296dfe909c4c6a12bb1b04cefa0b6df5748a2e7d73a",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 154,
+          "label": 0,
+          "rationale": "Interviewee in front of tire sculptures; a person is prominent.",
+          "source_image": "dataset/data/L04/L04_V011/154.jpg",
+          "target": {
+            "keyframe_n": 155,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 18198,
+          "image_list_offset": 0,
+          "image_sha256": "7e89d0de174ea8cc03916903946934450963f63c00643f3e8b8d7d619e59a78d",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 155,
+          "label": 1,
+          "rationale": "The close-up shows a heap of black tire rings beside the concrete wall and no person.",
+          "source_image": "dataset/data/L04/L04_V011/155.jpg",
+          "target": {
+            "keyframe_n": 155,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 18332,
+          "image_list_offset": 1,
+          "image_sha256": "a31fef185f106cbdd2f221259e37e10e0fe84a0e77fe0a2fc1ee43e82ac74d6d",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 156,
+          "label": 0,
+          "rationale": "Close-up of a sculpted face rather than a heap of tire rings.",
+          "source_image": "dataset/data/L04/L04_V011/156.jpg",
+          "target": {
+            "keyframe_n": 155,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        },
+        {
+          "frame_id": 18417,
+          "image_list_offset": 2,
+          "image_sha256": "a5768fad1db14a05ff49159c85ec9b588b9d46995c50a9f9b21a1834ec564010",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 157,
+          "label": 0,
+          "rationale": "Workers and a colorful statue are visible among tires, violating the person-free close-up requirement.",
+          "source_image": "dataset/data/L04/L04_V011/157.jpg",
+          "target": {
+            "keyframe_n": 155,
+            "video_id": "L04_V011"
+          },
+          "video_id": "L04_V011"
+        }
+      ],
+      "kind": "scene",
+      "language": "English",
+      "mapping_sha256": "4d86318fd2f7b008f0475145813f5d660d228f9a7e9c1f28a9e013ac56203f16",
+      "source_image": "dataset/data/L04/L04_V011/155.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 155,
+        "video_id": "L04_V011"
+      },
+      "target_position_zero_based": 154,
+      "text": "Close-up of a large heap of discarded black tire rings beside a concrete wall, with no person in view."
+    },
+    {
+      "assigned_kind": "mixed",
+      "fallback": null,
+      "frame_id": 9478,
+      "id": "t09",
+      "image_count": 240,
+      "image_sha256": "c9e115045050687d565afe718e28ad4bafabcc2aa616f529df90ec47e18650d8",
+      "judgments": [
+        {
+          "frame_id": 9296,
+          "image_list_offset": -2,
+          "image_sha256": "17e66b04a7b579497369d5dabd9a229b3241921dd71a34d7c25ad8ccd25e2588",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 78,
+          "label": 0,
+          "rationale": "Male studio presenter, not the yellow entrance arch.",
+          "source_image": "dataset/data/L04/L04_V015/078.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 9382,
+          "image_list_offset": -1,
+          "image_sha256": "955dd5c665e30c853cbd39ff11f56e968cb2157243b4279e4661dada12cf8b08",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 79,
+          "label": 1,
+          "rationale": "Yellow arch carries the exact homestay words beside the tall green sign.",
+          "source_image": "dataset/data/L04/L04_V015/079.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 9478,
+          "image_list_offset": 0,
+          "image_sha256": "c9e115045050687d565afe718e28ad4bafabcc2aa616f529df90ec47e18650d8",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 80,
+          "label": 1,
+          "rationale": "Closer view of the yellow arch with the exact homestay wording beside the green sign.",
+          "source_image": "dataset/data/L04/L04_V015/080.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 9583,
+          "image_list_offset": 1,
+          "image_sha256": "ea0e0d65d90ce570206bb168886f840fe8921092418ed7be837da8cd7e1a7982",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 81,
+          "label": 0,
+          "rationale": "Moored boats and a gangway; the yellow arch and green sign are absent.",
+          "source_image": "dataset/data/L04/L04_V015/081.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 9686,
+          "image_list_offset": 2,
+          "image_sha256": "d40374625a496db65ab6e13d0655cffd9756cae1b9a3d8ba57974dc305c5dc60",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 82,
+          "label": 0,
+          "rationale": "Boat with pink curtains; no yellow entrance arch or green sign.",
+          "source_image": "dataset/data/L04/L04_V015/082.jpg",
+          "target": {
+            "keyframe_n": 80,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        }
+      ],
+      "kind": "mixed",
+      "language": "English",
+      "mapping_sha256": "e8f5094d0a65af88dc184a54354fa78e8666c276cb63f8e9413c7a2d2f50a012",
+      "source_image": "dataset/data/L04/L04_V015/080.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 80,
+        "video_id": "L04_V015"
+      },
+      "target_position_zero_based": 79,
+      "text": "A yellow arched entrance sign reading \"FLOWER & FROG HOMESTAY\" beside a tall green sign."
+    },
+    {
+      "assigned_kind": "literal",
+      "fallback": "No substantive on-screen text in this image beyond the station logo and clock; use the same-image snowflake scene, not a different target.",
+      "frame_id": 19106,
+      "id": "t10",
+      "image_count": 240,
+      "image_sha256": "fdeba7c4994ddc770a949150d8ea29fe45283d8e016594ae8af3df72412904a6",
+      "judgments": [
+        {
+          "frame_id": 18848,
+          "image_list_offset": -2,
+          "image_sha256": "8cdbffc51bb5eaeb514f1093ce951deaf4cf7a6873a2ed0d94663ee526458b72",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 158,
+          "label": 0,
+          "rationale": "Woman interviewed in front of an illuminated building; no snowflake-covered tree.",
+          "source_image": "dataset/data/L04/L04_V015/158.jpg",
+          "target": {
+            "keyframe_n": 160,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 19004,
+          "image_list_offset": -1,
+          "image_sha256": "a56586e520b3afa9ece1f3f70f58ca48c43a23e9a6f8e13d6f07b906db79d40c",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 159,
+          "label": 0,
+          "rationale": "Illuminated building and rows of ground lanterns, not a snowflake tree.",
+          "source_image": "dataset/data/L04/L04_V015/159.jpg",
+          "target": {
+            "keyframe_n": 160,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 19106,
+          "image_list_offset": 0,
+          "image_sha256": "fdeba7c4994ddc770a949150d8ea29fe45283d8e016594ae8af3df72412904a6",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 160,
+          "label": 1,
+          "rationale": "Blue-lit tree trunk and branches are surrounded by numerous suspended white snowflake lights.",
+          "source_image": "dataset/data/L04/L04_V015/160.jpg",
+          "target": {
+            "keyframe_n": 160,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 19214,
+          "image_list_offset": 1,
+          "image_sha256": "49f1099ce072e20dddfc4a2c007fe6822100ec8e1e2c96ec37c6df06ca963da3",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 161,
+          "label": 0,
+          "rationale": "Green flower-shaped light sculptures, not a blue tree with snowflakes.",
+          "source_image": "dataset/data/L04/L04_V015/161.jpg",
+          "target": {
+            "keyframe_n": 160,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        },
+        {
+          "frame_id": 19313,
+          "image_list_offset": 2,
+          "image_sha256": "1d04023c9f939dcdc81e5154906e6b2b8c18e4e6ff1f621ecb1221ed27b8e260",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 162,
+          "label": 0,
+          "rationale": "Decorative ornament arches and a visitor, not the snowflake-lit tree.",
+          "source_image": "dataset/data/L04/L04_V015/162.jpg",
+          "target": {
+            "keyframe_n": 160,
+            "video_id": "L04_V015"
+          },
+          "video_id": "L04_V015"
+        }
+      ],
+      "kind": "scene",
+      "language": "English",
+      "mapping_sha256": "e8f5094d0a65af88dc184a54354fa78e8666c276cb63f8e9413c7a2d2f50a012",
+      "source_image": "dataset/data/L04/L04_V015/160.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 160,
+        "video_id": "L04_V015"
+      },
+      "target_position_zero_based": 159,
+      "text": "A tree lit blue at night with many white snowflake-shaped lights suspended around its branches."
+    },
+    {
+      "assigned_kind": "scene",
+      "fallback": null,
+      "frame_id": 10451,
+      "id": "t11",
+      "image_count": 266,
+      "image_sha256": "2e8fb761545003ea450d03dc8f5996a859c633da936c49b72a57758fd0093c35",
+      "judgments": [
+        {
+          "frame_id": 10229,
+          "image_list_offset": -2,
+          "image_sha256": "67bd845e53dcaf9e29839b12782d75e7a0ee7fc684d08e1102f1cfce86bb8060",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 87,
+          "label": 1,
+          "rationale": "Man in light blue shirt and dark tie and bob-haired woman in pale jacket both hold red cards behind angular white desk.",
+          "source_image": "dataset/data/L04/L04_V019/087.jpg",
+          "target": {
+            "keyframe_n": 89,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 10365,
+          "image_list_offset": -1,
+          "image_sha256": "4708c250c29aef29b75f230dbb8f2f5124eb43fa185c146209992b41946a7afe",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 88,
+          "label": 1,
+          "rationale": "Both presenters have the stated clothes and red cards behind the angular white desk.",
+          "source_image": "dataset/data/L04/L04_V019/088.jpg",
+          "target": {
+            "keyframe_n": 89,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 10451,
+          "image_list_offset": 0,
+          "image_sha256": "2e8fb761545003ea450d03dc8f5996a859c633da936c49b72a57758fd0093c35",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 89,
+          "label": 1,
+          "rationale": "The male presenter in blue and dark tie and short-haired woman in pale jacket hold red cards behind the angular desk.",
+          "source_image": "dataset/data/L04/L04_V019/089.jpg",
+          "target": {
+            "keyframe_n": 89,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 10589,
+          "image_list_offset": 1,
+          "image_sha256": "141637bb963b767c7f5c8149943fb456145d67d910b667fe143a256226e1e089",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 90,
+          "label": 1,
+          "rationale": "Same two presenters with red cards, matching clothing and angular white desk remain visible.",
+          "source_image": "dataset/data/L04/L04_V019/090.jpg",
+          "target": {
+            "keyframe_n": 89,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 10728,
+          "image_list_offset": 2,
+          "image_sha256": "5f67a95e9df8bb01c943391c16a7c9323bb739d59daadb7c66881a5bbfac307a",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 91,
+          "label": 0,
+          "rationale": "Drama close-up of a man in a gray polo; no two presenters or angular desk.",
+          "source_image": "dataset/data/L04/L04_V019/091.jpg",
+          "target": {
+            "keyframe_n": 89,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        }
+      ],
+      "kind": "scene",
+      "language": "English",
+      "mapping_sha256": "6cced2b2003db7db082abe17c256223e75c195d31e3c263f6130489705d88525",
+      "source_image": "dataset/data/L04/L04_V019/089.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 89,
+        "video_id": "L04_V019"
+      },
+      "target_position_zero_based": 88,
+      "text": "Two news presenters, a man in a light blue shirt and dark tie and a short-haired woman in a pale jacket, holding red cards behind an angular white desk."
+    },
+    {
+      "assigned_kind": "mixed",
+      "fallback": null,
+      "frame_id": 20879,
+      "id": "t12",
+      "image_count": 266,
+      "image_sha256": "430e194ce211bd118c8a420c6dcdddc7f481bb29018234636ce661cccb1b054e",
+      "judgments": [
+        {
+          "frame_id": 20700,
+          "image_list_offset": -2,
+          "image_sha256": "b3a9c4628669d656c10cbf663606035f813426851df338105282912d48d88a47",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 175,
+          "label": 0,
+          "rationale": "Interviewee and grounded/inflating balloons; the visible labeled balloon is not checkered and the full requested airborne group is not shown.",
+          "source_image": "dataset/data/L04/L04_V019/175.jpg",
+          "target": {
+            "keyframe_n": 177,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 20783,
+          "image_list_offset": -1,
+          "image_sha256": "ef6000b3c7738568f9be179f13f44d3b84028fa3165867f79657e52e6254a81d",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 176,
+          "label": 0,
+          "rationale": "Interview close-up; the labeled background balloon has broad color bands, not the requested checkered airborne balloon.",
+          "source_image": "dataset/data/L04/L04_V019/176.jpg",
+          "target": {
+            "keyframe_n": 177,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 20879,
+          "image_list_offset": 0,
+          "image_sha256": "430e194ce211bd118c8a420c6dcdddc7f481bb29018234636ce661cccb1b054e",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 177,
+          "label": 1,
+          "rationale": "Airborne group includes a gray-green checkered balloon with BAJA CALIFORNIA readable.",
+          "source_image": "dataset/data/L04/L04_V019/177.jpg",
+          "target": {
+            "keyframe_n": 177,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 20996,
+          "image_list_offset": 1,
+          "image_sha256": "13dc512ad25e2ed877e4a9ead920533604d259070caf334ceeeb13629db4052d",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 178,
+          "label": 0,
+          "rationale": "Wide distant airborne balloons; the exact words cannot be read on a checkered balloon.",
+          "source_image": "dataset/data/L04/L04_V019/178.jpg",
+          "target": {
+            "keyframe_n": 177,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        },
+        {
+          "frame_id": 21100,
+          "image_list_offset": 2,
+          "image_sha256": "eeebba1696e69311eaaeb15cbbc333183de838841923c5a99ab2c71a90c4cd12",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 179,
+          "label": 0,
+          "rationale": "Large striped balloon in foreground; no readable BAJA CALIFORNIA on a checkered balloon.",
+          "source_image": "dataset/data/L04/L04_V019/179.jpg",
+          "target": {
+            "keyframe_n": 177,
+            "video_id": "L04_V019"
+          },
+          "video_id": "L04_V019"
+        }
+      ],
+      "kind": "mixed",
+      "language": "English",
+      "mapping_sha256": "6cced2b2003db7db082abe17c256223e75c195d31e3c263f6130489705d88525",
+      "source_image": "dataset/data/L04/L04_V019/177.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 177,
+        "video_id": "L04_V019"
+      },
+      "target_position_zero_based": 176,
+      "text": "A group of airborne hot-air balloons, including a checkered balloon marked \"BAJA CALIFORNIA\"."
+    },
+    {
+      "assigned_kind": "literal",
+      "fallback": null,
+      "frame_id": 8658,
+      "id": "t13",
+      "image_count": 214,
+      "image_sha256": "5b4115ceecb553b8f1ad5c32fd3ab4b1b664d7f5eed79ae493a957de3eee0d74",
+      "judgments": [
+        {
+          "frame_id": 8434,
+          "image_list_offset": -2,
+          "image_sha256": "b065c4ed44086466a1d2236f1dc0dcaff5d171e81d2f68d8ccf949059a7759b8",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 70,
+          "label": 0,
+          "rationale": "Fishing-boat workers; ticker has a different place name, not the quoted phrase.",
+          "source_image": "dataset/data/L04/L04_V021/070.jpg",
+          "target": {
+            "keyframe_n": 72,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 8527,
+          "image_list_offset": -1,
+          "image_sha256": "15529cad2743af764ee29c24f4f4d2a66017aca1d239c37d1fede19cead960bc",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 71,
+          "label": 0,
+          "rationale": "Interviewee; the next ticker begins Trà Vinh but the full quoted phrase is clipped at the right edge.",
+          "source_image": "dataset/data/L04/L04_V021/071.jpg",
+          "target": {
+            "keyframe_n": 72,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 8658,
+          "image_list_offset": 0,
+          "image_sha256": "5b4115ceecb553b8f1ad5c32fd3ab4b1b664d7f5eed79ae493a957de3eee0d74",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 72,
+          "label": 1,
+          "rationale": "The complete quoted Trà Vinh phrase is readable along the lower ticker.",
+          "source_image": "dataset/data/L04/L04_V021/072.jpg",
+          "target": {
+            "keyframe_n": 72,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 8740,
+          "image_list_offset": 1,
+          "image_sha256": "ef9f21eb3a135368dd66668e9471b2ccf6226575ca6d4d855e705f718ac50b35",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 73,
+          "label": 1,
+          "rationale": "The entire quoted phrase is readable at the left of the ticker.",
+          "source_image": "dataset/data/L04/L04_V021/073.jpg",
+          "target": {
+            "keyframe_n": 72,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 8850,
+          "image_list_offset": 2,
+          "image_sha256": "5607fc262a44274bbb60f965b3fb4ac0fbb03a7b85fce337d30b8857342cd11b",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 74,
+          "label": 0,
+          "rationale": "Fish-market baskets; ticker has moved past the start of the requested phrase.",
+          "source_image": "dataset/data/L04/L04_V021/074.jpg",
+          "target": {
+            "keyframe_n": 72,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        }
+      ],
+      "kind": "literal",
+      "language": "English+Vietnamese",
+      "mapping_sha256": "160dd2b865f086d5e6e8bf0742326c1b5f62d5d67fa7b6e52b7cd94290c347fc",
+      "source_image": "dataset/data/L04/L04_V021/072.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 72,
+        "video_id": "L04_V021"
+      },
+      "target_position_zero_based": 71,
+      "text": "Find the ticker text \"Trà Vinh: Điều tra vụ thanh niên\"."
+    },
+    {
+      "assigned_kind": "scene",
+      "fallback": null,
+      "frame_id": 17035,
+      "id": "t14",
+      "image_count": 214,
+      "image_sha256": "2909a49900c2aed68dd0faae3fed4c249c32d8769929cc22ad18193e07459a20",
+      "judgments": [
+        {
+          "frame_id": 16808,
+          "image_list_offset": -2,
+          "image_sha256": "e57ad4384a48d319df64a3bf292852c3759069a6fd88deaef61ea43c90a1c7c5",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 141,
+          "label": 0,
+          "rationale": "Purple-lit trees and mist, no close-up of a woman.",
+          "source_image": "dataset/data/L04/L04_V021/141.jpg",
+          "target": {
+            "keyframe_n": 143,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 16905,
+          "image_list_offset": -1,
+          "image_sha256": "c638fedfb3c45eb2d37233d07caeb2a3f7f3d816461316a0456c54de09a34819",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 142,
+          "label": 1,
+          "rationale": "Woman close-up with purple hair, bangs and dark knitted beanie.",
+          "source_image": "dataset/data/L04/L04_V021/142.jpg",
+          "target": {
+            "keyframe_n": 143,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 17035,
+          "image_list_offset": 0,
+          "image_sha256": "2909a49900c2aed68dd0faae3fed4c249c32d8769929cc22ad18193e07459a20",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 143,
+          "label": 1,
+          "rationale": "Same woman close-up with purple bangs and dark knitted beanie.",
+          "source_image": "dataset/data/L04/L04_V021/143.jpg",
+          "target": {
+            "keyframe_n": 143,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 17125,
+          "image_list_offset": 1,
+          "image_sha256": "315148e6903dcff8a381908630528784cd4cc447b57c9336f13f14dfa5c07522",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 144,
+          "label": 0,
+          "rationale": "Colored points of light in trees, no woman close-up.",
+          "source_image": "dataset/data/L04/L04_V021/144.jpg",
+          "target": {
+            "keyframe_n": 143,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        },
+        {
+          "frame_id": 17212,
+          "image_list_offset": 2,
+          "image_sha256": "84fbce27815252cb1efb6f2eaa7ec7ee79418c941e3e977874e6c8e0e78ae6c8",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 145,
+          "label": 0,
+          "rationale": "Dimly lit forest path and small lights; no close-up woman.",
+          "source_image": "dataset/data/L04/L04_V021/145.jpg",
+          "target": {
+            "keyframe_n": 143,
+            "video_id": "L04_V021"
+          },
+          "video_id": "L04_V021"
+        }
+      ],
+      "kind": "scene",
+      "language": "English",
+      "mapping_sha256": "160dd2b865f086d5e6e8bf0742326c1b5f62d5d67fa7b6e52b7cd94290c347fc",
+      "source_image": "dataset/data/L04/L04_V021/143.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 143,
+        "video_id": "L04_V021"
+      },
+      "target_position_zero_based": 142,
+      "text": "Close-up of a woman with purple hair and bangs wearing a dark knitted beanie at night."
+    },
+    {
+      "assigned_kind": "mixed",
+      "fallback": null,
+      "frame_id": 10566,
+      "id": "t15",
+      "image_count": 262,
+      "image_sha256": "272d704123ed5096bccee415aab6fe3bcf326e9651da78bd83eeea372aeb2a36",
+      "judgments": [
+        {
+          "frame_id": 10366,
+          "image_list_offset": -2,
+          "image_sha256": "ef709c6e272c430fd594cd25c608b05579d37e5090c7f977f67d192308a772b9",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 86,
+          "label": 0,
+          "rationale": "Person holding a phone; no central SHB screenshot or red X.",
+          "source_image": "dataset/data/L04/L04_V025/086.jpg",
+          "target": {
+            "keyframe_n": 88,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 10476,
+          "image_list_offset": -1,
+          "image_sha256": "054ce5cfaea4e125f08ad6777ab313501a51e0d791ef31bf9be8fd9f89b42e9f",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 87,
+          "label": 0,
+          "rationale": "Phone close-up with a message, but no central SHB heading or large red X.",
+          "source_image": "dataset/data/L04/L04_V025/087.jpg",
+          "target": {
+            "keyframe_n": 88,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 10566,
+          "image_list_offset": 0,
+          "image_sha256": "272d704123ed5096bccee415aab6fe3bcf326e9651da78bd83eeea372aeb2a36",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 88,
+          "label": 1,
+          "rationale": "Central white screenshot is headed SHB and overlaid with a large red X.",
+          "source_image": "dataset/data/L04/L04_V025/088.jpg",
+          "target": {
+            "keyframe_n": 88,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 10718,
+          "image_list_offset": 1,
+          "image_sha256": "48f185bc62377b66634a1f4969e88feb3198bde07d42d7211dadcc2af5068aba",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 89,
+          "label": 0,
+          "rationale": "The central white message now begins UNG DUNG VCB DIGIBANK, not SHB; SHB is only a background fragment.",
+          "source_image": "dataset/data/L04/L04_V025/089.jpg",
+          "target": {
+            "keyframe_n": 88,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 10874,
+          "image_list_offset": 2,
+          "image_sha256": "ab88e14cedef79b5a84b8a5fb7811f633ae63d5adbe0ce9edb8eac6e0ed71caa",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 90,
+          "label": 0,
+          "rationale": "Man on a phone, not an SHB screenshot crossed out in red.",
+          "source_image": "dataset/data/L04/L04_V025/090.jpg",
+          "target": {
+            "keyframe_n": 88,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        }
+      ],
+      "kind": "mixed",
+      "language": "English",
+      "mapping_sha256": "2297ae18a0a757bea503b16b08fea282dcbe7e2d413fe5fa5c7adf50c56699a9",
+      "source_image": "dataset/data/L04/L04_V025/088.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 88,
+        "video_id": "L04_V025"
+      },
+      "target_position_zero_based": 87,
+      "text": "A central white message screenshot headed \"SHB\" covered by a large red X."
+    },
+    {
+      "assigned_kind": "literal",
+      "fallback": null,
+      "frame_id": 21122,
+      "id": "t16",
+      "image_count": 262,
+      "image_sha256": "ebf72e2ce1aef21a04b3d4bdea923bf7f1b4f6ee9a0574761fc04f1ae88ad536",
+      "judgments": [
+        {
+          "frame_id": 20921,
+          "image_list_offset": -2,
+          "image_sha256": "e168ec7aeb0b2f8c7995739a42e1f7f94b27b1fa510dfdd38da44f39b8079e8b",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 173,
+          "label": 0,
+          "rationale": "Officer and helmeted person by an ATM; no readable requested measurement.",
+          "source_image": "dataset/data/L04/L04_V025/173.jpg",
+          "target": {
+            "keyframe_n": 175,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 21029,
+          "image_list_offset": -1,
+          "image_sha256": "4e4993af413ef393a2ab452211a6b26ad523e84f0b7b8f4237f499d4bdfffa05",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 174,
+          "label": 0,
+          "rationale": "Officer at a car window, without the requested measurement display.",
+          "source_image": "dataset/data/L04/L04_V025/174.jpg",
+          "target": {
+            "keyframe_n": 175,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 21122,
+          "image_list_offset": 0,
+          "image_sha256": "ebf72e2ce1aef21a04b3d4bdea923bf7f1b4f6ee9a0574761fc04f1ae88ad536",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 175,
+          "label": 1,
+          "rationale": "Device screen clearly shows 0.115 and mg/L together.",
+          "source_image": "dataset/data/L04/L04_V025/175.jpg",
+          "target": {
+            "keyframe_n": 175,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 21230,
+          "image_list_offset": 1,
+          "image_sha256": "05fdfe8ed74e873692cb02d3e54d5f6b7b62f55d7387ba15d5fb7a31392b9078",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 176,
+          "label": 0,
+          "rationale": "Officer writing under a light; no requested measurement display.",
+          "source_image": "dataset/data/L04/L04_V025/176.jpg",
+          "target": {
+            "keyframe_n": 175,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        },
+        {
+          "frame_id": 21327,
+          "image_list_offset": 2,
+          "image_sha256": "faad2e6fa831e9ca6e0d6c79549f366df05d3f4465357668bb5caece791d68f0",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 177,
+          "label": 0,
+          "rationale": "Male presenter in a studio; no requested numeric reading and unit.",
+          "source_image": "dataset/data/L04/L04_V025/177.jpg",
+          "target": {
+            "keyframe_n": 175,
+            "video_id": "L04_V025"
+          },
+          "video_id": "L04_V025"
+        }
+      ],
+      "kind": "literal",
+      "language": "English",
+      "mapping_sha256": "2297ae18a0a757bea503b16b08fea282dcbe7e2d413fe5fa5c7adf50c56699a9",
+      "source_image": "dataset/data/L04/L04_V025/175.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 175,
+        "video_id": "L04_V025"
+      },
+      "target_position_zero_based": 174,
+      "text": "Find the displayed reading \"0.115\" with the unit \"mg/L\"."
+    },
+    {
+      "assigned_kind": "scene",
+      "fallback": null,
+      "frame_id": 10085,
+      "id": "t17",
+      "image_count": 261,
+      "image_sha256": "5018cce301ec2b354c448aeeb372e28a5eee200dae611245d797c2ff8a4e953a",
+      "judgments": [
+        {
+          "frame_id": 9822,
+          "image_list_offset": -2,
+          "image_sha256": "be83a2e8e6591ac3eb823e4469a9f372cdfffe28cb8b5e85e9f6d614029cfd68",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 85,
+          "label": 0,
+          "rationale": "Medal ceremony with national flags, no female studio presenter or temple inset.",
+          "source_image": "dataset/data/L04/L04_V028/085.jpg",
+          "target": {
+            "keyframe_n": 87,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 9931,
+          "image_list_offset": -1,
+          "image_sha256": "848371356ba2561c1ad1de0e0ffee4e2ecc3360fa8821fb48f4db03ca06c3de8",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 86,
+          "label": 0,
+          "rationale": "Award ceremony on a stage, not presenter beside a temple inset.",
+          "source_image": "dataset/data/L04/L04_V028/086.jpg",
+          "target": {
+            "keyframe_n": 87,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 10085,
+          "image_list_offset": 0,
+          "image_sha256": "5018cce301ec2b354c448aeeb372e28a5eee200dae611245d797c2ff8a4e953a",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 87,
+          "label": 1,
+          "rationale": "Female presenter in white holds red folder; inset shows nighttime temple courtyard with rows of red stools.",
+          "source_image": "dataset/data/L04/L04_V028/087.jpg",
+          "target": {
+            "keyframe_n": 87,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 10199,
+          "image_list_offset": 1,
+          "image_sha256": "cc3fb48542daf97e10e5cc0cb6a44b4abf1bb65d4ddf9b64ed3469293c4748fa",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 88,
+          "label": 0,
+          "rationale": "Presenter matches, but the inset shows offering tables and seated worshippers, not the specified rows of red stools.",
+          "source_image": "dataset/data/L04/L04_V028/088.jpg",
+          "target": {
+            "keyframe_n": 87,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 10308,
+          "image_list_offset": 2,
+          "image_sha256": "f11895397e5b412d360438e82e9257fd88805501c3784e048491791762ed5350",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 89,
+          "label": 0,
+          "rationale": "Presenter matches, but inset shows standing dancers around a table, not rows of red stools.",
+          "source_image": "dataset/data/L04/L04_V028/089.jpg",
+          "target": {
+            "keyframe_n": 87,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        }
+      ],
+      "kind": "scene",
+      "language": "English",
+      "mapping_sha256": "e0a5b6b289c8484f9d160fcbab42618978d82f8e604980f6601d1f24e2b63a4c",
+      "source_image": "dataset/data/L04/L04_V028/087.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 87,
+        "video_id": "L04_V028"
+      },
+      "target_position_zero_based": 86,
+      "text": "A female presenter in a white blouse holding a red folder beside an inset nighttime temple scene with rows of red stools."
+    },
+    {
+      "assigned_kind": "mixed",
+      "fallback": null,
+      "frame_id": 20275,
+      "id": "t18",
+      "image_count": 261,
+      "image_sha256": "8bc37bc7af5d71b8e1deedb676819df153a6664458fdcb45512c4d303231e4a3",
+      "judgments": [
+        {
+          "frame_id": 20001,
+          "image_list_offset": -2,
+          "image_sha256": "07b8d3049db96db60e93c079cff5efd9a25797f4a31efb55b586964968f987ab",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 172,
+          "label": 0,
+          "rationale": "Outdoor vertical footage of an orange-shirted man, not the specified presenter or ticker.",
+          "source_image": "dataset/data/L04/L04_V028/172.jpg",
+          "target": {
+            "keyframe_n": 174,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 20142,
+          "image_list_offset": -1,
+          "image_sha256": "310de4234812b77e80f5cc298ad905995316ac767901cdd8854ec4af3063d79f",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 173,
+          "label": 0,
+          "rationale": "Presenter matches clothing and glasses, but there is no quoted Indonesia ticker.",
+          "source_image": "dataset/data/L04/L04_V028/173.jpg",
+          "target": {
+            "keyframe_n": 174,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 20275,
+          "image_list_offset": 0,
+          "image_sha256": "8bc37bc7af5d71b8e1deedb676819df153a6664458fdcb45512c4d303231e4a3",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 174,
+          "label": 1,
+          "rationale": "Presenter matches all scene details and the quoted Indonesia phrase is readable on the right.",
+          "source_image": "dataset/data/L04/L04_V028/174.jpg",
+          "target": {
+            "keyframe_n": 174,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 20366,
+          "image_list_offset": 1,
+          "image_sha256": "5261649449171d7418dd63db2be02c2b8405b32fb14d044cc12c9dc196709b9e",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 175,
+          "label": 1,
+          "rationale": "Presenter and full quoted ticker phrase are both visible.",
+          "source_image": "dataset/data/L04/L04_V028/175.jpg",
+          "target": {
+            "keyframe_n": 174,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        },
+        {
+          "frame_id": 20506,
+          "image_list_offset": 2,
+          "image_sha256": "df1917cb639e33019a24928dfcb49fb3d3f374f188497d37413452d2687af6f4",
+          "inspection": "Actual original image opened directly with functions.read before packet freeze; no OCR/caption/rank used.",
+          "keyframe_n": 176,
+          "label": 0,
+          "rationale": "Smoke plume outdoors; no male studio presenter or requested Indonesia phrase.",
+          "source_image": "dataset/data/L04/L04_V028/176.jpg",
+          "target": {
+            "keyframe_n": 174,
+            "video_id": "L04_V028"
+          },
+          "video_id": "L04_V028"
+        }
+      ],
+      "kind": "mixed",
+      "language": "English+Vietnamese",
+      "mapping_sha256": "e0a5b6b289c8484f9d160fcbab42618978d82f8e604980f6601d1f24e2b63a4c",
+      "source_image": "dataset/data/L04/L04_V028/174.jpg",
+      "split": "test",
+      "target": {
+        "keyframe_n": 174,
+        "video_id": "L04_V028"
+      },
+      "target_position_zero_based": 173,
+      "text": "A bespectacled male presenter in a short-sleeved light blue shirt and dark tie with the ticker \"Indonesia khởi động chiến dịch\"."
+    }
+  ],
+  "schema_version": 2,
+  "scoring_config_sha256": "ac1ff38136eea3e13b22bd2f200a3003268ee19954fff5b58ea9c4ceaeb5ac7d"
+}

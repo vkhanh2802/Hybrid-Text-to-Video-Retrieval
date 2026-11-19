@@ -1,0 +1,69 @@
+{
+  "schema": "image_authored_ocr_pilot_v1",
+  "queries": [
+    {
+      "id": "q01_job_fair_literal",
+      "text": "A television news frame showing a job fair with blue plastic chairs and recruitment booths, with a headline containing the visible Vietnamese text \"VIỆC LÀM\".",
+      "literal": "VIỆC LÀM",
+      "positives": [{"video_id": "L01_V025", "keyframe_n": 14}],
+      "image_expectation": "Job-fair booths, blue chairs and visitors; headline about people visiting an employment exchange.",
+      "stratum": "literal"
+    },
+    {
+      "id": "q02_bridge_ceremony_literal",
+      "text": "An outdoor bridge-opening ceremony under a red-and-white canopy, with an audience facing a blue stage display bearing the visible text \"KINH DƯƠNG VƯƠNG\".",
+      "literal": "KINH DƯƠNG VƯƠNG",
+      "positives": [{"video_id": "L01_V020", "keyframe_n": 29}],
+      "image_expectation": "Audience seated under red-and-white canopy, blue bridge-opening stage banner. Text alone does not establish the scene.",
+      "stratum": "literal"
+    },
+    {
+      "id": "q03_water_headline_literal",
+      "text": "A news frame showing a broad expanse of pale water and a faint distant shoreline, with the visible headline text \"NGUY CƠ SẠT LỞ ĐẤT\".",
+      "literal": "NGUY CƠ SẠT LỞ ĐẤT",
+      "positives": [{"video_id": "L01_V018", "keyframe_n": 34}],
+      "image_expectation": "Pale water and a distant shoreline with a Hà Tĩnh news headline; do not infer a landslide actually visible.",
+      "stratum": "literal"
+    },
+    {
+      "id": "q04_aquarium_visual_control",
+      "text": "Several large elongated fish swimming in an aquarium under pink-purple lighting, shown close up.",
+      "literal": null,
+      "positives": [{"video_id": "L01_V026", "keyframe_n": 63}],
+      "image_expectation": "Large aquarium fish under purple lighting. Unrelated news ticker is not evidence about the fish.",
+      "stratum": "visual_control"
+    },
+    {
+      "id": "q05_formol_ticker_literal",
+      "text": "A male television news presenter wearing glasses, a purple shirt and a tie in an orange-red studio, with the visible ticker phrase \"3,2 tấn cá khoai chứa formol\".",
+      "literal": "3,2 tấn cá khoai chứa formol",
+      "positives": [{"video_id": "L02_V015", "keyframe_n": 181}],
+      "image_expectation": "Glasses, purple shirt/tie, orange-red studio and literal ticker; do not require fish or a truck to be visible.",
+      "stratum": "literal"
+    },
+    {
+      "id": "q06_tennis_name_literal",
+      "text": "A male television news presenter in a light blue shirt stands beside a large 60 giây graphic, with a ticker containing the visible name \"Zhang Zhizhen\".",
+      "literal": "Zhang Zhizhen",
+      "positives": [{"video_id": "L02_V022", "keyframe_n": 209}],
+      "image_expectation": "Male presenter, light blue shirt, large program graphic and named ticker; no tennis match needs to appear in the image.",
+      "stratum": "literal"
+    },
+    {
+      "id": "q07_vape_headline_challenge",
+      "text": "A bald man with sunglasses on his head stands inside a shop beside glass display counters, with a visible news headline containing \"THUỐC LÁ ĐIỆN TỬ\".",
+      "literal": "THUỐC LÁ ĐIỆN TỬ",
+      "positives": [{"video_id": "L02_V013", "keyframe_n": 84}],
+      "image_expectation": "Bald man, sunglasses on head, glass shop displays and headline; target OCR was previously observed to corrupt parts of this phrase.",
+      "stratum": "known_ocr_error_challenge"
+    },
+    {
+      "id": "q08_dog_paw_visual_control",
+      "text": "A close-up of a brown dog's front paw resting in a person's open hand.",
+      "literal": null,
+      "positives": [{"video_id": "L02_V002", "keyframe_n": 108}],
+      "image_expectation": "Brown dog paw held by a human hand; headline is not evidence of a specific therapy event occurring.",
+      "stratum": "visual_control"
+    }
+  ]
+}

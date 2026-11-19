@@ -28,6 +28,14 @@ OBJECT_MODEL = {
 }
 
 
+def allows_frame_idx_aliases(state):
+    """Explicit import-only policy; video extraction keeps strict frame IDs."""
+    config = state.get('keyframes', {}).get('config', {})
+    return (state.get('source', {}).get('kind') == 'existing_keyframes'
+            and config.get('mode') == 'import_existing_no_video_decode'
+            and config.get('allow_frame_idx_aliases') is True)
+
+
 def configure_device(device="cuda", threads=4):
     """Bound CPU decoding threads without hiding the Kaggle GPU."""
     threads = int(threads)
@@ -208,7 +216,8 @@ class VideoDatasetBuilder:
     def mapping_rows(self, video_id):
         """Read mapping in row order and verify its source JPEGs before inference."""
         paths = self.artifact_paths(video_id)
-        extraction = self._state(video_id).get("keyframes")
+        state = self._state(video_id)
+        extraction = state.get("keyframes")
         if not extraction:
             raise ValueError(f"No ingestion checkpoint for {video_id}; run keyframe extraction first")
         if file_sha256(paths["mapping"]) != extraction["mapping_sha256"]:
@@ -223,10 +232,12 @@ class VideoDatasetBuilder:
             raise ValueError(f"Keyframe count mismatch: {video_id}")
         previous_frame = -1
         previous_time = -1.0
+        allow_aliases = allows_frame_idx_aliases(state)
         for n, row in enumerate(rows, start=1):
-            if row["n"] != n or row["frame_idx"] <= previous_frame:
+            if (row["n"] != n or row['frame_idx'] < 0 or row["frame_idx"] < previous_frame
+                    or (row['frame_idx'] == previous_frame and not allow_aliases)):
                 raise ValueError(f"Invalid mapping order: {video_id}")
-            if not math.isfinite(row["pts_time"]) or row["pts_time"] < previous_time:
+            if not math.isfinite(row["pts_time"]) or row['pts_time'] < 0 or row["pts_time"] < previous_time:
                 raise ValueError(f"Invalid presentation timestamp: {video_id}")
             if not math.isfinite(row["fps"]) or row["fps"] <= 0:
                 raise ValueError(f"Invalid FPS: {video_id}")

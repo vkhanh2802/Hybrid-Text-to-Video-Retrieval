@@ -52,9 +52,14 @@ class BM25Retriever:
 
 class CaptionRetriever:
     @staticmethod
-    def _collect_artifact_map(directory, pattern, groups):
+    def _collect_artifact_map(directory, pattern, groups, recursive_legacy=False):
         artifacts = {}
-        for path in sorted(directory.rglob(pattern)):
+        # Filter roots before traversal; do not walk unrelated/cloud groups.
+        paths = list(directory.rglob(pattern)) if recursive_legacy else list(directory.glob(pattern))
+        if not recursive_legacy:
+            for group in sorted(groups):
+                paths.extend((directory / group).rglob(pattern))
+        for path in sorted(set(paths)):
             if not path.is_file():
                 continue
             video_id = path.name.removesuffix(".meta.json") if path.name.endswith(".meta.json") else path.stem
@@ -99,7 +104,7 @@ class CaptionRetriever:
                  (root / "index", ".index"), (root / "index", ".meta.json"))
         single_video = video_id is not None or json_path is not None
         if video_id is not None:
-            paths_by_video = {video_id: tuple(resolve_video_artifact(directory, video_id, suffix) for directory, suffix in specs)}
+            paths_by_video = {video_id: tuple(resolve_video_artifact(directory, video_id, suffix, video_groups=groups if video_groups is not None else None) for directory, suffix in specs)}
         elif json_path is not None:
             if index_path is None or mapping_path is None:
                 raise ValueError("Caption paths must be provided")
@@ -111,7 +116,8 @@ class CaptionRetriever:
                 raise ValueError(f"Dataset scope ends at L{MAX_VIDEO_GROUP}: {vid}")
             paths_by_video = {vid: (json_path, mapping_path, index_path, Path(index_path).with_name(f"{vid}.meta.json"))}
         else:
-            maps = [self._collect_artifact_map(directory, f"L*_V*{suffix}", groups) for directory, suffix in specs]
+            maps = [self._collect_artifact_map(directory, f"L*_V*{suffix}", groups,
+                                               recursive_legacy=video_groups is None) for directory, suffix in specs]
             ids = set(maps[0])
             if not ids or any(set(artifacts) != ids for artifacts in maps[1:]):
                 raise FileNotFoundError("Incomplete caption artifacts: captions, mappings, indexes and manifests must cover the same videos")
@@ -143,6 +149,7 @@ class CaptionRetriever:
         for position, attribute in enumerate(("json_path", "mapping_path", "index_path", "manifest_path")):
             setattr(self, attribute, loaded_paths[0][position] if single_video else [paths[position] for paths in loaded_paths])
         self._caption_by_identity = {(item["video_id"], int(item["frame_id"])): item for item in self.caption_data}
+        self._caption_position = {(item["video_id"], int(item["frame_id"])): i for i, item in enumerate(self.caption_data)}
         self.model = SentenceTransformer(CAPTION_CONFIG["model"], revision=CAPTION_CONFIG["revision"], device="cpu")
         print(f"[Caption] Loaded {self.index.ntotal} caption vectors")
 
@@ -151,6 +158,22 @@ class CaptionRetriever:
 
     def encode_query(self, query):
         return self.model.encode([query], convert_to_numpy=True, normalize_embeddings=True).astype(np.float32)
+
+    def score_frames(self, query, frames, query_vector=None):
+        """Exact local cosine scores; missing captions stay unknown (NaN)."""
+        scores = np.full(len(frames), np.nan, dtype=np.float32)
+        query_vector = self.encode_query(query)[0] if query_vector is None else query_vector
+        positions = self._caption_position
+        selected = [(i, positions[(frame["video_id"], int(frame["frame_id"]))]) for i, frame in enumerate(frames)
+                    if (frame["video_id"], int(frame["frame_id"])) in positions]
+        if selected:
+            for i, position in selected:
+                if (frames[i].get("keyframe_n") is not None
+                        and int(frames[i]["keyframe_n"]) != int(self.caption_data[position]["keyframe_n"])):
+                    raise ValueError("Caption/local mapping identity mismatch")
+            vectors = np.asarray([self.index.reconstruct(position) for _, position in selected], dtype=np.float32)
+            scores[[i for i, _ in selected]] = vectors @ query_vector
+        return scores
 
     def search(self, query, top_k=50):
         if top_k <= 0:

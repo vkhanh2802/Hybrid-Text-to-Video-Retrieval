@@ -1,0 +1,10 @@
+# Isolated Python 3.10-3.12 environment ONLY; inherited from prepare_ocr_pilot.py.
+# These pins are not proof that wheels exist for every Kaggle image/CUDA runtime.
+# Stop if unavailable; do not unpin or downgrade the repository environment.
+paddleocr==3.7.0
+paddlex==3.7.0
+paddlepaddle==3.3.1
+numpy==1.26.4
+huggingface-hub==1.27.0
+Pillow==11.1.0
+jsonschema==4.23.0
