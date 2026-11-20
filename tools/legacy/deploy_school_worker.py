@@ -8,7 +8,7 @@ import secrets
 import subprocess
 import zipfile
 
-from tools.transfer_school_data import ROOT, CONFIG_FILES, remote_python, sha256_file, ssh_options
+from tools.legacy.transfer_school_data import ROOT, CONFIG_FILES, remote_python, sha256_file, ssh_options
 
 
 BOOTSTRAP = r'''

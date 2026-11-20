@@ -22,7 +22,7 @@ import time
 
 from kis.paths import VISUAL_FEATURES_NAME
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 ARTIFACT_DIRS = ("caption_generator", "caption_mapping", VISUAL_FEATURES_NAME,
                  "index", "mapping", "objects", "ocr", "preparation")
 CONFIG_FILES = ("models.json", "pipeline.json", "object_labels.json")

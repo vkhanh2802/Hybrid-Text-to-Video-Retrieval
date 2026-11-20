@@ -3,7 +3,7 @@
 SigLIP2-384's own preprocess squashes every image to 384x384 (no crop), so the
 bundle stores that size directly: about half the bytes of aspect-kept JPEGs.
 
-Runs on the school CPU (stdlib + Pillow only). Row order follows each mapping
+Requires stdlib + Pillow only. Row order follows each mapping
 CSV exactly, so the Kaggle notebook can write NPY files aligned with the
 visual features layout (config/models.json features_dir). Missing images are listed, never invented.
 

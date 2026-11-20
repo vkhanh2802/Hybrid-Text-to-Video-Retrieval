@@ -7,10 +7,11 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 # Manual DRES picking: Qwen is off by default (no model load, no image reads for
 # scoring). Pass -WithQwen to restore the old 20-frame rerank.
 if ($WithQwen) { $env:KIS_DISABLE_VLM = "0" } else { $env:KIS_DISABLE_VLM = "1" }
-$settingsPath = Join-Path $PSScriptRoot $WorkerConfig
+$settingsPath = Join-Path $ProjectRoot $WorkerConfig
 if (-not (Test-Path -LiteralPath $settingsPath)) {
     throw "School worker settings missing. Deploy the worker first."
 }
@@ -40,7 +41,7 @@ try {
     }
     # start_kis only calls the query planner API and local web. It inherits the worker connection;
     # no planner/Drive/DRES credentials are sent to the school host.
-    & (Join-Path $PSScriptRoot "start_kis.ps1") -Python $Python -Provider $Provider -Model $Model
+    & (Join-Path $ProjectRoot "scripts/start_kis.ps1") -Python $Python -Provider $Provider -Model $Model
 } finally {
     if ($null -ne $tunnel -and -not $tunnel.HasExited) {
         Stop-Process -Id $tunnel.Id -ErrorAction SilentlyContinue
