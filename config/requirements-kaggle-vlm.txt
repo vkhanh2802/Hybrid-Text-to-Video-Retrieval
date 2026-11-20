@@ -1,7 +1,0 @@
-# Keep Kaggle's CUDA-enabled torch/torchvision and NumPy. Do not install the Windows requirements.txt.
-transformers==5.15.0
-accelerate==1.14.0
-bitsandbytes==0.50.2
-huggingface-hub==1.27.0
-pandas>=2.2,<4
-Pillow>=11.1,<13

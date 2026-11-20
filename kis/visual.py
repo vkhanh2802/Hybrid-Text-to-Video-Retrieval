@@ -8,7 +8,7 @@ from kis.paths import MAX_VIDEO_GROUP, video_group
 
 MILVUS_URI = "http://localhost:19530"
 # One collection per visual model; the old SigLIP collection stays untouched.
-COLLECTION_NAME = VISUAL_CONFIG.get("milvus_collection", "clip_keyframes")
+COLLECTION_NAME = VISUAL_CONFIG["milvus_collection"]
 EMBEDDING_DIM = int(VISUAL_CONFIG["dimension"])
 
 
@@ -19,24 +19,16 @@ class SiglipEncoder:
         import torch
         import open_clip
         from huggingface_hub import snapshot_download
-        from open_clip.tokenizer import HFTokenizer
 
         self.device = device
         self.torch = torch
         print(f"[*] Loading SigLIP on {device}...")
-        if VISUAL_CONFIG.get("loader") == "local-dir":
-            # Same files/loader as tools/embed_siglip2.py, so query and corpus vectors match.
-            snapshot = snapshot_download(repo_id=VISUAL_CONFIG["hf_repo"], revision=VISUAL_CONFIG["hf_revision"],
-                                         allow_patterns=["open_clip_config.json", "open_clip_model.safetensors",
-                                                         "tokenizer*", "special_tokens_map.json"])
-            self.model, self.image_preprocess = open_clip.create_model_from_pretrained("local-dir:" + snapshot)
-            self.tokenizer = open_clip.get_tokenizer("local-dir:" + snapshot)
-        else:
-            snapshot = snapshot_download(repo_id=VISUAL_CONFIG["hf_repo"], revision=VISUAL_CONFIG["hf_revision"])
-            self.model, _, self.image_preprocess = open_clip.create_model_and_transforms(
-                VISUAL_CONFIG["model"], pretrained=snapshot + "/open_clip_model.safetensors",
-            )
-            self.tokenizer = HFTokenizer(snapshot, context_length=int(self.model.context_length), clean="canonicalize")
+        # Same files/loader as tools/embed_siglip2.py, so query and corpus vectors match.
+        snapshot = snapshot_download(repo_id=VISUAL_CONFIG["hf_repo"], revision=VISUAL_CONFIG["hf_revision"],
+                                     allow_patterns=["open_clip_config.json", "open_clip_model.safetensors",
+                                                     "tokenizer*", "special_tokens_map.json"])
+        self.model, self.image_preprocess = open_clip.create_model_from_pretrained("local-dir:" + snapshot)
+        self.tokenizer = open_clip.get_tokenizer("local-dir:" + snapshot)
         self.model = self.model.to(device)
         self.model.eval()
         print("[*] SigLIP loaded.")

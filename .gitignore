@@ -61,3 +61,22 @@ venv/
 /.impeccable/
 /kis-kaggle-code.zip
 /notebooks/videoprocessing.ipynb
+
+# GitHub keeps only what the demo app needs; research material stays local.
+/tests/
+/notebooks/
+/docs/
+/benchmarks/
+/schemas/
+/kis/support_calibration.py
+/config/ocr-kaggle*.json
+/config/requirements-kaggle*.txt
+/tools/*
+!/tools/__init__.py
+!/tools/build_milvus.py
+!/tools/deploy_school_worker.py
+!/tools/embed_siglip2.py
+!/tools/ingest.py
+!/tools/prepare_siglip2_bundle.py
+!/tools/structured_caption_generator.py
+!/tools/transfer_school_data.py

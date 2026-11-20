@@ -35,7 +35,7 @@ OBJECTS_DIR = DATASET_ROOT / "objects"
 MAPPING_DIR = DATASET_ROOT / "mapping"
 # kis.config imports this module, so read the visual features dir from the manifest directly.
 VISUAL_FEATURES_NAME = json.loads((KIS_ROOT / "config" / "models.json").read_text(encoding="utf-8"))[
-    "visual_embedding"].get("features_dir", "clip-features-32")
+    "visual_embedding"]["features_dir"]
 CLIP_FEATURES_DIR = DATASET_ROOT / VISUAL_FEATURES_NAME
 
 VIDEO_ID_PATTERN = re.compile(r"^L\d+_V\d+$")

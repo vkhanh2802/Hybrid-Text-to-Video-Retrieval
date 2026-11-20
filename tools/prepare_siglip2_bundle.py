@@ -5,7 +5,7 @@ bundle stores that size directly: about half the bytes of aspect-kept JPEGs.
 
 Runs on the school CPU (stdlib + Pillow only). Row order follows each mapping
 CSV exactly, so the Kaggle notebook can write NPY files aligned with the
-existing clip-features-32 layout. Missing images are listed, never invented.
+visual features layout (config/models.json features_dir). Missing images are listed, never invented.
 
     python tools/prepare_siglip2_bundle.py --dataset /path/dataset \
         --output /path/siglip2-bundle.zip --groups L01 L02 ... L21

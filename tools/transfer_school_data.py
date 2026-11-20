@@ -20,8 +20,10 @@ import tarfile
 import time
 
 
+from kis.paths import VISUAL_FEATURES_NAME
+
 ROOT = Path(__file__).resolve().parents[1]
-ARTIFACT_DIRS = ("caption_generator", "caption_mapping", "clip-features-32",
+ARTIFACT_DIRS = ("caption_generator", "caption_mapping", VISUAL_FEATURES_NAME,
                  "index", "mapping", "objects", "ocr", "preparation")
 CONFIG_FILES = ("models.json", "pipeline.json", "object_labels.json")
 EXCLUDED_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp", ".mp4", ".avi", ".mkv",

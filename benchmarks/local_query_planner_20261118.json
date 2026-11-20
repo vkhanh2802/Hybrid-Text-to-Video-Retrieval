@@ -1,7 +1,0 @@
-{
-  "base_queries": "benchmarks/random_image_queries_20261118.json",
-  "probes": [
-    {"id": "ocr_probe", "query": "Một cửa hàng có biển ghi chính xác dòng chữ \"SỬA XE MINH TÂM\", phía trước có một chiếc xe máy màu đỏ."},
-    {"id": "temporal_probe", "query": "Đầu tiên một người đàn ông mặc áo xanh mở cửa xe ô tô, sau đó người đó ngồi vào trong xe."}
-  ]
-}
