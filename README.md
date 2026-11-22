@@ -41,7 +41,8 @@ KISBranche/
 ├── volumes/                # Dữ liệu bền vững của Docker, không có trong Git
 ├── docker-compose.yml      # Milvus và các dịch vụ phụ trợ local
 ├── requirements.txt
-└── start_kis.ps1            # Điểm vào tương thích, chuyển đến scripts/
+├── start_kis.ps1            # Điểm vào tương thích, chuyển đến scripts/
+└── start_school.ps1         # Chạy web với worker CPU trường (tự bật worker nếu đang tắt)
 ```
 
 Các thư mục dữ liệu, thử nghiệm và build ở trên có thể chỉ xuất hiện trong
