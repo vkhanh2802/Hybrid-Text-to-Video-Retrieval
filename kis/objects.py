@@ -1,5 +1,6 @@
 """Object metadata lookup and optional evidence boosting."""
 
+import csv
 import os
 import json
 import math
@@ -72,29 +73,27 @@ def provider_object_record(detection, max_detections=100):
 
 
 class ObjectMetadataLookup:
+    # shortcut: FIFO cap on parsed records (~3 KB each); raise it if the worker has spare RAM.
+    MAX_CACHED_RECORDS = 50000
+
     def __init__(self, mapping_dir=MAPPING_DIR, objects_dir=OBJECTS_DIR):
         self.mapping_dir = Path(mapping_dir)
         self.objects_dir = Path(objects_dir)
         self.csv_cache = {}
+        self._records = {}
 
     def get_keyframe_n(self, video_id, frame_id):
-        import pandas as pd
-
-        if video_id not in self.csv_cache:
+        numbers = self.csv_cache.get(video_id)
+        if numbers is None:
             csv_path = resolve_video_artifact(self.mapping_dir, video_id, ".csv")
-
             if not os.path.exists(csv_path):
                 return None
-
-            self.csv_cache[video_id] = pd.read_csv(csv_path)
-
-        df = self.csv_cache[video_id]
-        rows = df[df["frame_idx"] == frame_id]
-
-        if rows.empty:
-            return None
-
-        return int(rows.iloc[0]["n"])
+            numbers = {}
+            with open(csv_path, encoding="utf-8", newline="") as handle:
+                for row in csv.DictReader(handle):
+                    numbers.setdefault(int(row["frame_idx"]), int(row["n"]))  # first row wins, as before
+            self.csv_cache[video_id] = numbers
+        return numbers.get(int(frame_id))
 
     def get(self, video_id, frame_id=None):
         if frame_id is None:
@@ -105,19 +104,38 @@ class ObjectMetadataLookup:
                     "ObjectMetadataLookup.get() requires (video_id, frame_id) "
                     "or a 2-item tuple/list key."
                 )
+        key = (video_id, int(frame_id))
+        if key in self._records:
+            return self._records[key]
+        record = self._read(video_id, frame_id)
+        if len(self._records) >= self.MAX_CACHED_RECORDS:
+            self._records.pop(next(iter(self._records)))
+        self._records[key] = record
+        return record
 
+    def _read(self, video_id, frame_id):
         n = self.get_keyframe_n(video_id, frame_id)
-
         if n is None:
             return None
-
         json_path = resolve_video_object_dir(video_id, self.objects_dir) / f"{n:03d}.json"
-
         if not os.path.exists(json_path):
             return None
-
         with open(json_path, "r", encoding="utf-8") as f:
             return json.load(f)
+
+    def prefetch(self, keys, workers=16):
+        """Read uncached records in parallel: cold small-file reads are seek-bound, not CPU-bound."""
+        from concurrent.futures import ThreadPoolExecutor
+        missing = list(dict.fromkeys((vid, int(frame)) for vid, frame in keys if (vid, int(frame)) not in self._records))
+        if len(missing) < 2:
+            return
+        for video_id in {vid for vid, _ in missing}:
+            self.get_keyframe_n(video_id, -1)  # load each mapping once, outside the thread pool
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for key, record in zip(missing, pool.map(lambda key: self._read(*key), missing)):
+                if len(self._records) >= self.MAX_CACHED_RECORDS:
+                    self._records.pop(next(iter(self._records)))
+                self._records[key] = record
 
 
 DEFAULT_MIN_CONFIDENCE = 0.2
@@ -157,6 +175,9 @@ def apply_object_filter(candidates, entities, object_lookup,
     if not object_entities:
         return candidates
     print(f"[Object Score] Checking {len(object_entities)} object entities")
+    prefetch = getattr(object_lookup, "prefetch", None)
+    if prefetch is not None:
+        prefetch([(candidate["video_id"], candidate["frame_id"]) for candidate in candidates])
     for candidate in candidates:
         key = (candidate["video_id"], candidate["frame_id"])
         retrieval_score = float(candidate.setdefault("retrieval_score", candidate["score"]))
