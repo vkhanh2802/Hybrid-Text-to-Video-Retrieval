@@ -255,7 +255,7 @@ function createResultCard(result) {
     const signal = imageRequests.signal;
     image.addEventListener("error", showMissing, { once: true });
     image.decoding = "async";
-    lazyResultImage(imageButton, () => fetch(result.image_url, { cache: "no-store", signal })
+    lazyResultImage(imageButton, () => fetch(result.image_url, { signal })
       .then((response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.blob();

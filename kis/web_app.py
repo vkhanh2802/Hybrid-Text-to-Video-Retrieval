@@ -788,7 +788,8 @@ def api_keyframes(video_id: str):
 
 @app.get("/api/images/{video_id}/{image_number}", include_in_schema=False)
 def api_image(video_id: str, image_number: int):
-    headers = {"Cache-Control": "no-store, max-age=0", "Pragma": "no-cache"}
+    # Keyframes never change: let the browser keep them instead of refetching through the tunnel.
+    headers = {"Cache-Control": "private, max-age=86400, immutable"}
     if (not VIDEO_ID_PATTERN.fullmatch(video_id) or video_id.split("_")[0] not in service.video_groups
             or image_number < 0 or image_number not in mapped_keyframes(video_id)):
         raise HTTPException(status_code=404, detail="Image not found")

@@ -123,7 +123,9 @@ class DRESClient:
                         403: "Tài khoản không có quyền thực hiện thao tác này trên DRES",
                         404: "Không tìm thấy run/task hoặc tài khoản không được tham gia run này",
                         412: "DRES từ chối bài nộp (trùng bài, giới hạn lượt hoặc quy tắc task)"}
-            if submitting:
+            # 401/403/404 are session/access errors even with a {"status": false} body: resubmitting
+            # cannot help. DRES sends real refusals (e.g. unknown media item) as HTTP 500 + ErrorStatus.
+            if submitting and exc.code not in {401, 403, 404}:
                 try:
                     refusal = json.loads(upstream)
                 except ValueError:
