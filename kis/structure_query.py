@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import sys
+import time
 from kis.artifact_io import atomic_write_json
 from kis.config import QUERY_STRUCTURING_CONFIG
 from kis.llm import HTTPQueryStructurer, QueryAPIConfig, QueryAPIError, QueryOutputError, load_query_api_config, parse_query_json
@@ -432,6 +433,11 @@ def normalize_structured_query(raw_query, query_id, generated):
 
 
 class GeminiQueryStructurer:
+    # Gemini answers "503 UNAVAILABLE: high demand" to ~1 in 5 calls at busy times; a short
+    # retry almost always succeeds and is faster than the OpenCode fallback (~8 s).
+    RETRYABLE_STATUS = {429, 500, 503, 504}
+    RETRY_DELAYS = (0.5, 1.5)
+
     def __init__(self, api_key=None, model=None, client=None, base_url=None,
                  timeout_seconds=60, max_tokens=4096, temperature=0.2, response_format="auto"):
         api_key = api_key or os.environ.get("GEMINI_API_KEY")
@@ -470,23 +476,28 @@ class GeminiQueryStructurer:
         schema = QUERY_RESPONSE_SCHEMA if self.response_format in {"auto", "json_schema"} else None
         if schema is None:
             instruction += "\nReturn only JSON matching this schema:\n" + json.dumps(QUERY_RESPONSE_SCHEMA)
-        try:
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=instruction,
-                    temperature=self.temperature,
-                    max_output_tokens=self.max_tokens,
-                    response_mime_type=None if self.response_format == "text" else "application/json",
-                    response_json_schema=schema,
-                ),
-            )
-        except Exception as exc:
-            message = str(exc)
-            if self._api_key:
-                message = message.replace(self._api_key, "[redacted]")
-            raise RuntimeError(f"Gemini query API failed: {message[:500]}") from None
+        for attempt in range(len(self.RETRY_DELAYS) + 1):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=instruction,
+                        temperature=self.temperature,
+                        max_output_tokens=self.max_tokens,
+                        response_mime_type=None if self.response_format == "text" else "application/json",
+                        response_json_schema=schema,
+                    ),
+                )
+                break
+            except Exception as exc:
+                if getattr(exc, "code", None) in self.RETRYABLE_STATUS and attempt < len(self.RETRY_DELAYS):
+                    time.sleep(self.RETRY_DELAYS[attempt])
+                    continue
+                message = str(exc)
+                if self._api_key:
+                    message = message.replace(self._api_key, "[redacted]")
+                raise RuntimeError(f"Gemini query API failed: {message[:500]}") from None
         return parse_query_json(response.text)
 
 

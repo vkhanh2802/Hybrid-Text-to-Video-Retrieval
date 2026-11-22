@@ -63,6 +63,24 @@ def failure_reason(error):
     return "unavailable"
 
 
+def resolve_opencode_cli(configured=""):
+    """Configured path if it still exists, else the newest desktop-app CLI, else PATH.
+
+    The OpenCode desktop app updates itself into a new versioned folder and deletes the old one,
+    so a pinned path such as cli/2.2.5-x64/opencode-cli.exe silently goes stale.
+    """
+    if configured and Path(configured).is_file():
+        return configured
+    appdata = os.environ.get("APPDATA")
+    if appdata:
+        def version(path):
+            return tuple(int(part) for part in re.findall(r"\d+", path.parent.name.split("-")[0]))
+        installed = sorted(Path(appdata).glob("ai.opencode.desktop/cli/*/opencode-cli.exe"), key=version)
+        if installed:
+            return str(installed[-1])
+    return shutil.which("opencode") or shutil.which("opencode-cli")
+
+
 class OpenCodeQueryStructurer:
     def __init__(self, config):
         self.config = config
@@ -71,7 +89,7 @@ class OpenCodeQueryStructurer:
     def generate(self, query):
         from kis.structure_query import SYSTEM_INSTRUCTION, QUERY_RESPONSE_SCHEMA, canonicalize_model_query
 
-        cli = self.config.cli_path or shutil.which("opencode")
+        cli = resolve_opencode_cli(self.config.cli_path)
         if not cli or not Path(cli).is_file() or Path(cli).suffix.lower() in {".cmd", ".bat"}:
             raise QueryPlanningError("OpenCode fallback: không tìm thấy CLI thực thi; kiểm tra cấu hình local.")
         prompt = (SYSTEM_INSTRUCTION
