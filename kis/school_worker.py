@@ -56,6 +56,7 @@ class ExactVisualIndex:
                 raise ValueError("Worker zero embedding")
             self.matrix[offset:offset + len(keep)] = (vectors / norms)[keep]
             offset += len(keep)
+        self.row_of = {(row["video_id"], row["frame_id"]): i for i, row in enumerate(self.rows)}
 
     def search(self, vector, top_k=100):
         import numpy as np
@@ -66,8 +67,19 @@ class ExactVisualIndex:
         if vector.shape != (768,) or not np.isfinite(vector).all() or not math.isfinite(float(norm)) or norm <= 0:
             raise ValueError("Invalid worker visual vector")
         scores = self.matrix @ (vector / norm)
-        indices = np.argsort(-scores, kind="stable")[:top_k]
+        # Partial top-k, then a stable sort of only those rows (ties stay in row order).
+        top = np.arange(len(scores)) if top_k >= len(scores) else np.sort(np.argpartition(-scores, top_k - 1)[:top_k])
+        indices = top[np.argsort(-scores[top], kind="stable")]
         return [dict(self.rows[int(i)], score=float(scores[i])) for i in indices]
+
+    def similar(self, video_id, frame_id, top_k):
+        """Image-to-image: the stored vector of one worker frame as the query."""
+        if not isinstance(video_id, str) or type(frame_id) is not int:
+            raise ValueError("Invalid similar-frame identity")
+        position = self.row_of.get((video_id, frame_id))
+        if position is None:
+            raise FileNotFoundError("Frame not in worker visual index")
+        return self.search(self.matrix[position], top_k)
 
 
 def exclude_ambiguous_captions(captions, ambiguous):
@@ -270,8 +282,9 @@ def handler(runtime, token):
                     value = runtime.retrieve(payload)
                 elif self.path == "/ocr-evidence":
                     value = runtime.ocr_evidence(payload)
-                elif self.path == "/visual-search":
-                    rows = runtime.visual.search(payload["vector"], payload["top_k"])
+                elif self.path in {"/visual-search", "/similar"}:
+                    rows = (runtime.visual.search(payload["vector"], payload["top_k"]) if self.path == "/visual-search"
+                            else runtime.visual.similar(payload["video_id"], payload["frame_id"], payload["top_k"]))
                     for row in rows:
                         metadata = runtime.captions.get_caption(row["video_id"], row["frame_id"])
                         if metadata:

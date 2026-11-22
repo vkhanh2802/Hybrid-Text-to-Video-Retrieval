@@ -404,10 +404,12 @@ class SearchService:
         if not VIDEO_ID_PATTERN.fullmatch(video_id) or video_id.split("_")[0] not in self.video_groups:
             raise ValueError("Video nằm ngoài phạm vi tìm kiếm")
         started_at = perf_counter()
-        vector = frame_vector(video_id, frame_id)
+        # School mode: the worker holds the features; the laptop may only have mapping CSVs.
+        vector = None if self.remote_worker is not None else frame_vector(video_id, frame_id)
         with self._operation_lock:
             self._load()
-            results = self.visual_retriever.search(vector, top_k=SIMILAR_RESULT_LIMIT)
+            results = (self.remote_worker.similar(video_id, frame_id, SIMILAR_RESULT_LIMIT) if vector is None
+                       else self.visual_retriever.search(vector, top_k=SIMILAR_RESULT_LIMIT))
             for row in results:
                 row["final_score"] = row["visual_score"] = row["score"]
                 metadata = self.caption_retriever.get_caption(row["video_id"], row["frame_id"]) or {}

@@ -8,6 +8,7 @@ from io import BytesIO
 import json
 import math
 import os
+import threading
 from pathlib import Path
 from types import SimpleNamespace
 from urllib.error import HTTPError, URLError
@@ -58,7 +59,16 @@ class RemoteWorker:
         self._opener = build_opener(ProxyHandler({}), NoRedirect())
         self.info = None
         self.captions = {}
-        self.transport_failed = False
+        self._state = threading.local()
+
+    @property
+    def transport_failed(self):
+        # Per thread: an image fetch failing in another request must not fail this search.
+        return getattr(self._state, "failed", False)
+
+    @transport_failed.setter
+    def transport_failed(self, value):
+        self._state.failed = value
 
     def request(self, route, payload=None, *, image=False):
         data = json.dumps(payload, allow_nan=False).encode() if payload is not None else None
@@ -193,6 +203,10 @@ class RemoteWorker:
 
     def search(self, vector, top_k=100):
         result = self.request("/visual-search", {"vector": vector.tolist(), "top_k": top_k})
+        return self.validate_candidates(result["results"])
+
+    def similar(self, video_id, frame_id, top_k):
+        result = self.request("/similar", {"video_id": video_id, "frame_id": frame_id, "top_k": top_k})
         return self.validate_candidates(result["results"])
 
     def get_caption(self, video_id, frame_id):

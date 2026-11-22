@@ -30,6 +30,30 @@ class BM25Retriever:
         self.tokenizer_mode = tokenizer_mode
         self.corpus_tokens = [tokenize_caption(item.get("retrieval_text", ""), tokenizer_mode) for item in caption_data]
         self.bm25 = BM25Okapi(self.corpus_tokens)
+        # rank_bm25.get_scores walks every document per token in Python; postings touch only matches.
+        postings = {}
+        for position, frequencies in enumerate(self.bm25.doc_freqs):
+            for term, count in frequencies.items():
+                postings.setdefault(term, ([], []))
+                postings[term][0].append(position)
+                postings[term][1].append(count)
+        self._postings = {term: (np.asarray(docs, dtype=np.int64), np.asarray(counts, dtype=np.float64))
+                          for term, (docs, counts) in postings.items()}
+        doc_len = np.asarray(self.bm25.doc_len, dtype=np.float64)
+        bm25 = self.bm25
+        self._length_norm = bm25.k1 * (1 - bm25.b + bm25.b * doc_len / bm25.avgdl) if len(doc_len) else doc_len
+
+    def scores(self, tokens):
+        """Same values as BM25Okapi.get_scores(tokens)."""
+        score = np.zeros(self.bm25.corpus_size)
+        k1 = self.bm25.k1
+        for token in tokens:
+            hit = self._postings.get(token)
+            if hit is None:
+                continue
+            docs, counts = hit
+            score[docs] += (self.bm25.idf.get(token) or 0) * (counts * (k1 + 1) / (counts + self._length_norm[docs]))
+        return score
 
     def search_bm25(self, query, top_k=100):
         if top_k <= 0:
@@ -37,11 +61,13 @@ class BM25Retriever:
         tokens = tokenize_caption(query, self.tokenizer_mode)
         if not tokens:
             return []
-        scores = self.bm25.get_scores(tokens)
+        scores = self.scores(tokens)
+        positive = np.flatnonzero(scores > 0)
+        if len(positive) > top_k:
+            positive = positive[np.argpartition(-scores[positive], top_k - 1)[:top_k]]
+            positive.sort()
         results = []
-        for idx in np.argsort(scores)[::-1][:top_k]:
-            if scores[idx] <= 0:
-                continue
+        for idx in positive[np.argsort(-scores[positive], kind="stable")]:
             item = self.caption_data[idx]
             result = {"video_id": item["video_id"], "frame_id": item["frame_id"],
                       "score": float(scores[idx]), "retrieval_text": item.get("retrieval_text", "")}
