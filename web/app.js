@@ -81,10 +81,46 @@ function scheduleHoverZoom(anchor, result) {
     left = Math.min(Math.max(margin, left), window.innerWidth - width - margin);
     const top = Math.min(Math.max(margin, rect.top + (rect.height - height) / 2),
       Math.max(margin, window.innerHeight - height - margin));
-    hoverZoomImage.src = result.preview_url;
+    hoverZoomImage.src = result.full_url || result.preview_url;
+    showFullImage(hoverZoomImage, result);
     Object.assign(hoverZoom.style, { top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px` });
     hoverZoom.hidden = false;
   }, HOVER_ZOOM_DELAY_MS);
+}
+
+// Grid cards show a small thumbnail (preview_url). Zoom and preview start with it and
+// swap to the full keyframe (full_url), fetched once on demand.
+function loadFullImage(result) {
+  if (!result.image_url) return Promise.resolve(null);
+  if (result.full_url) return Promise.resolve(result.full_url);
+  if (!result.full_request) {
+    const signal = imageRequests.signal;
+    result.full_request = fetch(result.image_url, { signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.blob();
+      })
+      .then((blob) => {
+        if (signal.aborted) return null;
+        result.full_url = URL.createObjectURL(blob);
+        imageUrls.add(result.full_url);
+        return result.full_url;
+      })
+      .catch(() => null)
+      .finally(() => { delete result.full_request; });
+  }
+  return result.full_request;
+}
+
+function showFullImage(target, result) {
+  if (result.full_url) {
+    target.src = result.full_url;
+    return;
+  }
+  const shown = result.preview_url;
+  loadFullImage(result).then((url) => {
+    if (url && target.src === shown) target.src = url;  // still showing this result's thumbnail
+  });
 }
 
 window.addEventListener("scroll", hideHoverZoom, true);
@@ -225,7 +261,8 @@ function metadataChip(label, value, className = "") {
 
 function openPreview(result) {
   if (!result.preview_url) return;
-  previewImage.src = result.preview_url;
+  previewImage.src = result.full_url || result.preview_url;
+  showFullImage(previewImage, result);
   previewImage.alt = `Rank ${result.rank}, ${result.video_id}, frame ${result.frame_id}`;
   previewLocation.textContent = `${result.video_id} · IMG ${result.image_number ?? "—"} · FRAME ${result.frame_id}`;
   previewCaption.textContent = result.caption || "Không có caption.";
@@ -233,6 +270,9 @@ function openPreview(result) {
 }
 
 function createResultCard(result) {
+  // Re-rendered results (e.g. "Back" from similar) hold blob URLs that were already revoked.
+  delete result.preview_url;
+  delete result.full_url;
   const card = document.createElement("article");
   card.className = "result-card";
 
@@ -255,7 +295,7 @@ function createResultCard(result) {
     const signal = imageRequests.signal;
     image.addEventListener("error", showMissing, { once: true });
     image.decoding = "async";
-    lazyResultImage(imageButton, () => fetch(result.image_url, { signal })
+    lazyResultImage(imageButton, () => fetch(`${result.image_url}?size=thumb`, { signal })
       .then((response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.blob();

@@ -175,6 +175,10 @@ class RemoteWorker:
         self.reference({"video_id": video_id, "keyframe_n": number})
         return self.request(f"/images/{video_id}/{number}", image=True)
 
+    def read_thumbnail(self, video_id, number):
+        self.reference({"video_id": video_id, "keyframe_n": number})
+        return self.request(f"/thumbs/{video_id}/{number}", image=True)
+
     @contextmanager
     def open_candidate(self, candidate, lookup):
         if self.reference(candidate, lookup) is None:

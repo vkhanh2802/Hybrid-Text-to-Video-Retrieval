@@ -145,6 +145,7 @@ class WorkerRuntime:
         else:
             self.ocr = OCRRetriever(Path(dataset) / "ocr/index.sqlite3", self.config.video_groups)
         self.dataset = Path(dataset).resolve()
+        self._thumbnails = {}
         self.info = {"protocol": 1, "state": "ready", "models": MODEL_MANIFEST,
                       "result_limit": WEB_RESULT_LIMIT,
                       "runtime": runtime_signature(self.config), "caption_vectors": self.captions.index.ntotal,
@@ -239,6 +240,29 @@ class WorkerRuntime:
                 return path.read_bytes(), "image/png" if suffix == ".png" else "image/jpeg"
         raise FileNotFoundError("Image absent from school dataset")
 
+    THUMBNAIL_WIDTH = 384  # result cards are ~210 px wide; 384 stays sharp on 2x screens
+    MAX_THUMBNAILS = 4096  # ~20 KB each
+
+    def thumbnail(self, video_id, number):
+        """Small JPEG for the result grid: ~8x fewer bytes over the VPN than the keyframe."""
+        key = (video_id, number)
+        cached = self._thumbnails.get(key)
+        if cached is not None:
+            return cached
+        from PIL import Image
+        data, _ = self.image(video_id, number)
+        with Image.open(BytesIO(data)) as image:
+            image.draft("RGB", (self.THUMBNAIL_WIDTH, self.THUMBNAIL_WIDTH))  # JPEG decodes at reduced scale
+            image = image.convert("RGB")
+            image.thumbnail((self.THUMBNAIL_WIDTH, self.THUMBNAIL_WIDTH), Image.BICUBIC)
+            buffer = BytesIO()
+            image.save(buffer, format="JPEG", quality=80)
+        reply = buffer.getvalue(), "image/jpeg"
+        if len(self._thumbnails) >= self.MAX_THUMBNAILS:
+            self._thumbnails.pop(next(iter(self._thumbnails)), None)
+        self._thumbnails[key] = reply
+        return reply
+
 
 def handler(runtime, token):
     class Handler(BaseHTTPRequestHandler):
@@ -267,10 +291,11 @@ def handler(runtime, token):
                         info["ocr"] = runtime.ocr.status()
                     self.reply(200, info)
                     return
-                match = re.fullmatch(r"/images/(L\d+_V\d+)/(\d+)", self.path)
+                match = re.fullmatch(r"/(images|thumbs)/(L\d+_V\d+)/(\d+)", self.path)
                 if not match:
                     raise FileNotFoundError()
-                data, mime = runtime.image(match[1], int(match[2]))
+                read = runtime.thumbnail if match[1] == "thumbs" else runtime.image
+                data, mime = read(match[2], int(match[3]))
                 self.reply(200, data, mime)
                 return
             size = int(self.headers.get("Content-Length", "0"))

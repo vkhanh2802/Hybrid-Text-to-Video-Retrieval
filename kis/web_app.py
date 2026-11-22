@@ -789,7 +789,7 @@ def api_keyframes(video_id: str):
 
 
 @app.get("/api/images/{video_id}/{image_number}", include_in_schema=False)
-def api_image(video_id: str, image_number: int):
+def api_image(video_id: str, image_number: int, size: Literal["full", "thumb"] = "full"):
     # Keyframes never change: let the browser keep them instead of refetching through the tunnel.
     headers = {"Cache-Control": "private, max-age=86400, immutable"}
     if (not VIDEO_ID_PATTERN.fullmatch(video_id) or video_id.split("_")[0] not in service.video_groups
@@ -797,7 +797,9 @@ def api_image(video_id: str, image_number: int):
         raise HTTPException(status_code=404, detail="Image not found")
     if service.image_source is not None:
         try:
-            data, mime = service.image_source.read(video_id, image_number)
+            # Thumbnails only matter over the tunnel; other sources serve the keyframe itself.
+            read_thumbnail = getattr(service.image_source, "read_thumbnail", None) if size == "thumb" else None
+            data, mime = (read_thumbnail or service.image_source.read)(video_id, image_number)
             return Response(content=data, media_type=mime, headers=headers)
         except FileNotFoundError as exc:
             raise HTTPException(status_code=404, detail="Image not found") from exc
