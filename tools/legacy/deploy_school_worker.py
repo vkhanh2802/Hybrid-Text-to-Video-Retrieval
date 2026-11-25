@@ -36,7 +36,7 @@ for name in list(env):
     if name.startswith(('GROQ_','GEMINI_','OPENAI_','GOOGLE_APPLICATION_','KIS_LLM_','KIS_WORKER_')):env.pop(name)
 read_fd,write_fd=os.pipe()
 with (base/'worker.log').open('x') as log:
-    process=subprocess.Popen([os.path.expanduser('~/KISBranche/.venv/bin/python'),'-u','-m','kis.school_worker','--dataset',cfg['dataset'],'--token-file',str(token_file),'--port',str(cfg['port']),'--ready-fd',str(write_fd)],cwd=source,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,pass_fds=(write_fd,))
+    process=subprocess.Popen([os.path.expanduser(cfg['python']),'-u','-m','kis.school_worker','--dataset',cfg['dataset'],'--token-file',str(token_file),'--port',str(cfg['port']),'--ready-fd',str(write_fd)],cwd=source,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,pass_fds=(write_fd,))
 os.close(write_fd)
 with os.fdopen(read_fd) as stream:line=stream.readline()
 if not line:raise RuntimeError('Worker failed before startup; inspect isolated worker.log')
@@ -65,7 +65,7 @@ def deploy(args):
         f"base=pathlib.Path.home()/{name!r}\nbase.mkdir(mode=0o700)\n"
         "(base/'source.zip.partial').open('xb').close()\nprint(json.dumps({'destination':str(base)}))")
     cfg = dict(state, source_sha256=sha256_file(archive), members=[p.relative_to(ROOT).as_posix() for p in sources],
-               dataset=args.dataset, port=args.port, token=secrets.token_urlsafe(48))
+               dataset=args.dataset, port=args.port, token=secrets.token_urlsafe(48), python=args.python)
     if args.ocr_root:
         if not args.ocr_manifest_sha256:
             raise ValueError("Snapshot deployment requires explicit manifest pin")
@@ -85,6 +85,7 @@ def deploy(args):
                "target": args.target, "remote_port": args.port, "local_port": args.local_port,
                 "remote_root": result["destination"], "worker_pid": result["worker"]["pid"], "vlm_batch_size": 12}
     runtime['dataset'] = args.dataset
+    runtime['python'] = args.python
     if args.ocr_root:
         runtime.update(ocr_format="school_snapshot", ocr_mode="retrieve", ocr_root=args.ocr_root,
                         ocr_manifest_sha256=args.ocr_manifest_sha256, ocr_weight=args.ocr_weight)
@@ -103,6 +104,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--port", type=int, default=8014)
     parser.add_argument("--local-port", type=int, default=18004)
+    parser.add_argument("--python", default="~/KISBranche/.venv/bin/python",
+                        help="Worker interpreter on the school host (a venv with requirements.txt)")
     parser.add_argument("--settings", type=Path, help="New private staging config; existing files are never replaced")
     parser.add_argument("--ocr-root")
     parser.add_argument("--ocr-manifest-sha256")

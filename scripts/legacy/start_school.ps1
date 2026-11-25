@@ -49,6 +49,8 @@ try {
     }
     if (-not (Test-SchoolWorker)) {
         $port = [int]$settings.remote_port
+        # Worker venv on the school host; older settings files predate the "python" key.
+        $workerPython = if ($settings.python) { [string]$settings.python } else { '$HOME/KISBranche/.venv/bin/python' }
         $workerEnv = 'PYTHONPATH=$R/source CUDA_VISIBLE_DEVICES= HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false FAISS_OPT_LEVEL=generic'
         if ($null -ne $settings.ocr_format) {
             $weight = ([double]$settings.ocr_weight).ToString([System.Globalization.CultureInfo]::InvariantCulture)
@@ -59,8 +61,8 @@ try {
         # The pgrep pattern is anchored to the python command, so it cannot match this bash -c line.
         # Only the worker goes to the background: a backgrounded 'cd && env' subshell would keep ssh open.
         $remote = ('R={0}; if pgrep -u $(id -un) -f ''^[^ ]*python[^ ]* -u -m kis[.]school_worker .*--port {1}( |$)'' >/dev/null; then echo loading; ' +
-                   'else cd $R/source || exit 1; env {2} setsid nohup $HOME/KISBranche/.venv/bin/python -u -m kis.school_worker ' +
-                   '--dataset {3} --token-file $R/worker.token --port {1} >> $R/worker.log 2>&1 < /dev/null & echo started; fi') -f $settings.remote_root, $port, $workerEnv, $settings.dataset
+                   'else cd $R/source || exit 1; env {2} setsid nohup {4} -u -m kis.school_worker ' +
+                   '--dataset {3} --token-file $R/worker.token --port {1} >> $R/worker.log 2>&1 < /dev/null & echo started; fi') -f $settings.remote_root, $port, $workerEnv, $settings.dataset, $workerPython
         $state = & ssh.exe -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 $settings.target $remote
         if ($LASTEXITCODE -ne 0) { throw "Cannot reach the school host over SSH; check VPN." }
         Write-Host "School worker $state on port $port; waiting for it to load (about 90 s)..."
